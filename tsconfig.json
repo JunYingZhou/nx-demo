@@ -5,6 +5,12 @@
   "references": [
     {
       "path": "./apps/my-monorepo1"
+    },
+    {
+      "path": "./apps/app-v"
+    },
+    {
+      "path": "./apps/mobile-app"
     }
   ]
 }
