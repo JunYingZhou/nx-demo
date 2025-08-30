@@ -6,7 +6,12 @@
     "dev:web": "nx serve app-r",
     "dev:rn": "nx start app-rn",
     "dev:ex": "nx run app-ex:start",
-    "dev": "pnpm -r --parallel run dev:*"
+    "dev": "pnpm -r --parallel run dev:*",
+    "expo:start": "nx run app-ex:start",
+    "expo:android": "nx run app-ex:android",
+    "expo:ios": "nx run app-ex:ios",
+    "expo:web": "nx run app-ex:web",
+    "expo:build": "nx run app-ex:build"
   },
   "private": true,
   "dependencies": {
