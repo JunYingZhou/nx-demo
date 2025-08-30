@@ -19,7 +19,7 @@
       "path": "./shared/assets"
     },
     {
-      "path": "./app-ex"
+      "path": "./apps/app-ex"
     }
   ]
 }
