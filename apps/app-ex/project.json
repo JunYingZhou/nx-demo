@@ -1,0 +1,77 @@
+{
+  "name": "app-ex",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/app-ex",
+  "projectType": "application",
+  "targets": {
+    "start": {
+      "executor": "@nx/expo:start",
+      "options": {
+        "port": 8081
+      }
+    },
+    "android": {
+      "executor": "@nx/expo:run",
+      "options": {
+        "platform": "android"
+      }
+    },
+    "ios": {
+      "executor": "@nx/expo:run",
+      "options": {
+        "platform": "ios"
+      }
+    },
+    "web": {
+      "executor": "@nx/expo:run",
+      "options": {
+        "platform": "web"
+      }
+    },
+    "build": {
+      "executor": "@nx/expo:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/app-ex"
+      },
+      "configurations": {
+        "development": {
+          "development": true,
+          "distribution": "internal"
+        },
+        "production": {}
+      }
+    },
+    "submit": {
+      "executor": "@nx/expo:submit"
+    },
+    "serve": {
+      "executor": "@nx/expo:start",
+      "options": {
+        "port": 8081
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/app-ex/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "unit": {
+          "testPathPattern": ".*\\.spec\\.ts$"
+        },
+        "integration": {
+          "testPathPattern": ".*\\.integration\\.ts$"
+        }
+      }
+    }
+  },
+  "tags": []
+}

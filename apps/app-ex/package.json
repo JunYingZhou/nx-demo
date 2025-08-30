@@ -14,7 +14,10 @@
     "@react-navigation/native-stack": "^7.3.25",
     "@react-navigation/stack": "^7.4.7",
     "@testing-library/react-native": "*",
+    "add": "^2.0.6",
     "expo": "^53.0.22",
+    "expo-barcode-scanner": "^13.0.1",
+    "expo-camera": "^16.1.11",
     "expo-splash-screen": "*",
     "expo-status-bar": "*",
     "expo-system-ui": "^5.0.11",
@@ -23,6 +26,8 @@
     "metro-resolver": "*",
     "react": "*",
     "react-native": "^0.79.5",
+    "react-native-gesture-handler": "^2.28.0",
+    "react-native-reanimated": "^4.1.0",
     "react-native-safe-area-context": "^5.4.0",
     "react-native-screens": "^4.11.1",
     "react-native-svg": "*",
@@ -30,5 +35,8 @@
     "react-native-vector-icons": "^10.3.0",
     "react-native-web": "*",
     "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "react-native-worklets": "^0.5.0"
   }
 }

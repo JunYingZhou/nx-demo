@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 const features = [
-  { key: "camera", title: "相机\n拍照/录像/扫码" },
+  { key: "camera", title: "相机\n拍照/录像/扫码", screen: "Camera" },
   { key: "album", title: "相册 / 文件" },
   { key: "mic", title: "麦克风" },
   { key: "gps", title: "定位 / GPS" },
@@ -33,7 +33,7 @@ export function HomeScreen({ navigation }) {
     <TouchableOpacity
       style={[styles.card, { backgroundColor: cardColor }]}
       onPress={() => {
-        navigation.navigate("HomeDetail", { feature: item.key });
+        navigation.navigate(item.screen, { feature: item.key });
       }}
     >
       <Text style={[styles.cardText, { color: textColor }]}>{item.title}</Text>
