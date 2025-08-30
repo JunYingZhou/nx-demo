@@ -2,5 +2,21 @@
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "files": [],
-  "references": []
+  "references": [
+    {
+      "path": "./apps/app-rn"
+    },
+    {
+      "path": "./apps/app-r"
+    },
+    {
+      "path": "./shared/ui"
+    },
+    {
+      "path": "./shared/utils"
+    },
+    {
+      "path": "./shared/assets"
+    }
+  ]
 }
