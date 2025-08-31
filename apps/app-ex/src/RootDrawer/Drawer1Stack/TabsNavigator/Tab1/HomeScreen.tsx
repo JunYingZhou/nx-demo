@@ -33,7 +33,8 @@ export function HomeScreen({ navigation }) {
     <TouchableOpacity
       style={[styles.card, { backgroundColor: cardColor }]}
       onPress={() => {
-        navigation.navigate(item.screen, { feature: item.key });
+        // navigation.navigate(item.screen, { feature: item.key });
+        navigation.navigate(item.screen);
       }}
     >
       <Text style={[styles.cardText, { color: textColor }]}>{item.title}</Text>

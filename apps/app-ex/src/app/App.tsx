@@ -12,33 +12,39 @@ import {
 } from 'react-native';
 import Svg, { G, Path } from 'react-native-svg';
 import { NavigationContainer, DarkTheme, DefaultTheme } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Drawer2Screen } from '../RootDrawer/Drawer2Stack/Drawer2Screen';
 import { Drawer1Screen } from '../RootDrawer/Drawer1Stack/Drawer1Screen';
 import { useColorScheme } from 'react-native';
-
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 export const App = () => {
   const [whatsNextYCoord, setWhatsNextYCoord] = useState<number>(0);
   const scrollViewRef = useRef<null | ScrollView>(null);
-  const Drawer = createDrawerNavigator(); // for drawer navigation
   const scheme = useColorScheme();
   const isDarkMode = scheme === 'dark';
    return (
     <>
       <StatusBar barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'} />
-      <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Drawer.Navigator
-          initialRouteName="Drawer1"
-          screenOptions={{
-            drawerType: 'slide', // 可以改成 'front' 或 'back'
-          }}
-        >
-          <Drawer.Screen name="Drawer1" component={Drawer1Screen} />
-          <Drawer.Screen name="Drawer2" component={Drawer2Screen} />
-        </Drawer.Navigator>
-      </NavigationContainer>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+            {/* <Drawer.Navigator
+              initialRouteName="Drawer1"
+              screenOptions={{
+                drawerType: 'slide', // 可以改成 'front' 或 'back'
+              }}
+            >
+              <Drawer.Screen name="Drawer1" component={Drawer1Screen} />
+              <Drawer.Screen name="Drawer2" component={Drawer2Screen} />
+            </Drawer.Navigator> */}
+              {/* <Drawer.Screen name="Drawer1" component={Drawer1Screen} /> */}
+              <Drawer1Screen />
+
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
     </>
   );
 };

@@ -1,96 +1,103 @@
-import { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Button, Alert } from 'react-native';
-import { Camera } from 'expo-camera';
-import { BarCodeScanner } from 'expo-barcode-scanner';
+import React, { useState, useRef } from 'react';
+import { View, Text, Button, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { CameraView, useCameraPermissions, BarcodeScanningResult } from 'expo-camera';
 
-export function CameraScreen({ navigation }) {
-  const [hasPermission, setHasPermission] = useState(null);
-  const [scanning, setScanning] = useState(false); // 是否扫码模式
-  const cameraRef = useRef(null);
-  const [isRecording, setIsRecording] = useState(false);
+export function CameraScreen() {
+  const [cameraType, setCameraType] = useState<'back' | 'front'>('back');
+  const [permission, requestPermission] = useCameraPermissions();
+  const [scanning, setScanning] = useState(false);
+  const [recording, setRecording] = useState(false);
+  const cameraRef = useRef<any>(null);
 
-  // 请求权限
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      const audio = await Camera.requestMicrophonePermissionsAsync();
-      setHasPermission(status === 'granted' && audio.status === 'granted');
-    })();
-  }, []);
+  if (!permission) return <Text>请求相机权限中...</Text>;
+  if (!permission.granted)
+    return (
+      <View style={styles.center}>
+        <Text>需要相机权限</Text>
+        <Button title="授予权限" onPress={requestPermission} />
+      </View>
+    );
 
-  if (hasPermission === null) {
-    return <View><Text>请求权限中...</Text></View>;
-  }
-  if (hasPermission === false) {
-    return <View><Text>没有相机权限</Text></View>;
-  }
+  const toggleCameraType = () => {
+    setCameraType(prev => (prev === 'back' ? 'front' : 'back'));
+  };
 
-  const handleTakePhoto = async () => {
-    if (cameraRef.current) {
+  const takePicture = async () => {
+    if (!cameraRef.current) return;
+    try {
       const photo = await cameraRef.current.takePictureAsync();
-      Alert.alert("拍照成功", `照片路径: ${photo.uri}`);
+      Alert.alert('拍照成功', photo.uri);
       console.log('Photo:', photo);
+    } catch (err) {
+      console.error('拍照失败', err);
     }
   };
 
-  const handleRecordVideo = async () => {
-    if (cameraRef.current) {
-      if (isRecording) {
-        cameraRef.current.stopRecording();
-        setIsRecording(false);
-      } else {
-        setIsRecording(true);
-        const video = await cameraRef.current.recordAsync();
-        Alert.alert("录像完成", `视频路径: ${video.uri}`);
-        console.log('Video:', video);
-      }
+  const startRecording = async () => {
+    if (!cameraRef.current) return;
+    setRecording(true);
+    try {
+      const video = await cameraRef.current.recordAsync();
+      Alert.alert('录像完成', video.uri);
+      console.log('Video:', video);
+    } catch (err) {
+      console.error('录像失败', err);
+    } finally {
+      setRecording(false);
     }
   };
 
-  const handleScanQRCode = () => {
-    setScanning(true);
+  const stopRecording = () => {
+    if (cameraRef.current && recording) {
+      cameraRef.current.stopRecording();
+      setRecording(false);
+    }
   };
 
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = (result: BarcodeScanningResult) => {
+    Alert.alert('扫码成功', `类型: ${result.type}\n内容: ${result.data}`);
+    console.log('Scanned:', result);
     setScanning(false);
-    Alert.alert("二维码内容", data);
-    console.log(`Scanned QR code with type ${type} and data ${data}`);
   };
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1 }}>
       {scanning ? (
-        <BarCodeScanner
+        <CameraView
+          style={{ flex: 1 }}
+          facing={cameraType}
           onBarCodeScanned={handleBarCodeScanned}
-          style={StyleSheet.absoluteFillObject}
         />
       ) : (
-        <Camera style={styles.camera} type={Camera.Constants.Type.back} ref={cameraRef} />
+        <CameraView style={{ flex: 1 }} facing={cameraType} ref={cameraRef} />
       )}
 
       <View style={styles.controls}>
-        <Button title="拍照" onPress={handleTakePhoto} />
-        <Button title={isRecording ? "停止录像" : "开始录像"} onPress={handleRecordVideo} />
-        <Button title="扫码" onPress={handleScanQRCode} />
-        <Button title="返回" onPress={() => navigation.goBack()} />
+        <Button title="切换相机" onPress={toggleCameraType} />
+        <Button title="拍照" onPress={takePicture} />
+        {recording ? (
+          <Button title="停止录像" onPress={stopRecording} color="red" />
+        ) : (
+          <Button title="开始录像" onPress={startRecording} />
+        )}
+        <Button title="扫码" onPress={() => setScanning(true)} />
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  camera: {
-    flex: 1,
-  },
   controls: {
     position: 'absolute',
     bottom: 40,
-    left: 0,
-    right: 0,
+    left: 10,
+    right: 10,
     flexDirection: 'row',
     justifyContent: 'space-around',
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
