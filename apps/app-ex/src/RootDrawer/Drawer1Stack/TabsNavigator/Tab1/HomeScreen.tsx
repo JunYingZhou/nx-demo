@@ -10,15 +10,15 @@ import {
 
 const features = [
   { key: "camera", title: "相机\n拍照/录像/扫码", screen: "Camera" },
-  { key: "album", title: "相册 / 文件" },
-  { key: "mic", title: "麦克风" },
-  { key: "gps", title: "定位 / GPS" },
-  { key: "sensor", title: "传感器" },
-  { key: "bluetooth", title: "蓝牙" },
+  { key: "album", title: "相册 / 文件", screen: "Album" },
+  { key: "mic", title: "麦克风", screen: "Mic" },
+  { key: "gps", title: "定位 / GPS", screen: "Gps" },
+  { key: "sensor", title: "传感器", screen: "Sensor" },
+  { key: "bluetooth", title: "蓝牙", screen: "Bluetooth" },
   { key: "nfc", title: "NFC" },
-  { key: "biometric", title: "指纹 / FaceID" },
-  { key: "vibration", title: "震动" },
-  { key: "battery", title: "电池 & 网络" },
+  { key: "biometric", title: "指纹 / FaceID", screen: "Biometric" },
+  { key: "vibration", title: "震动", screen: "Vibration" },
+  { key: "battery", title: "电池 & 网络", screen: "Battery" },
 ];
 
 export function HomeScreen({ navigation }) {
