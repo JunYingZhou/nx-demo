@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, Button, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { CameraView, useCameraPermissions, BarcodeScanningResult } from 'expo-camera';
 
@@ -7,7 +7,14 @@ export function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanning, setScanning] = useState(false);
   const [recording, setRecording] = useState(false);
+  const [cameraReady, setCameraReady] = useState(false);
+  const [videoUri, setVideoUri] = useState<string | null>(null);
+  const [action, setAction] = useState('picture');
   const cameraRef = useRef<any>(null);
+
+  useEffect(() => {
+    console.log('action useEffect', action);
+  }, [action]);
 
   if (!permission) return <Text>请求相机权限中...</Text>;
   if (!permission.granted)
@@ -25,6 +32,7 @@ export function CameraScreen() {
   const takePicture = async () => {
     if (!cameraRef.current) return;
     try {
+      setAction('picture');
       const photo = await cameraRef.current.takePictureAsync();
       Alert.alert('拍照成功', photo.uri);
       console.log('Photo:', photo);
@@ -35,22 +43,31 @@ export function CameraScreen() {
 
   const startRecording = async () => {
     if (!cameraRef.current) return;
+    if (!cameraReady) {
+      Alert.alert('等待摄像头准备完成');
+      return;
+    }
     setRecording(true);
+    await setAction('video');
+
+    
     try {
-      const video = await cameraRef.current.recordAsync();
+      const video = await cameraRef.current.recordAsync({ maxDuration: 60 });
+      setVideoUri(video.uri);
       Alert.alert('录像完成', video.uri);
-      console.log('Video:', video);
-    } catch (err) {
-      console.error('录像失败', err);
+    } catch (error) {
+      console.error('录像失败', error);
+      Alert.alert('录像失败', `${error}`);
     } finally {
       setRecording(false);
     }
   };
+  
+  
 
   const stopRecording = () => {
     if (cameraRef.current && recording) {
       cameraRef.current.stopRecording();
-      setRecording(false);
     }
   };
 
@@ -67,10 +84,20 @@ export function CameraScreen() {
           style={{ flex: 1 }}
           facing={cameraType}
           onBarCodeScanned={handleBarCodeScanned}
+          onCameraReady={() => setCameraReady(true)}
         />
+
       ) : (
-        <CameraView style={{ flex: 1 }} facing={cameraType} ref={cameraRef} />
+        <CameraView
+          mode={action}
+          style={{ flex: 1 }}
+          facing={cameraType}
+          ref={cameraRef}
+          onCameraReady={() => setCameraReady(true)}
+        />
+      
       )}
+
 
       <View style={styles.controls}>
         <Button title="切换相机" onPress={toggleCameraType} />
