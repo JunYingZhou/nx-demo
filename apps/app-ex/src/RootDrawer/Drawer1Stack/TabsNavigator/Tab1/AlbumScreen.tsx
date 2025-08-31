@@ -81,37 +81,46 @@ export function AlbumScreen() {
 
 
 
+/**
+ * 加载设备中的媒体文件（图片和视频）
+ * 该函数会请求相册权限，然后分别获取最近创建的50张图片和50个视频
+ * @returns {Promise<void>}
+ */
   const loadMedia = async () => {
     try {
-      setLoading(true);
+      setLoading(true);  // 设置加载状态为true，显示加载指示器
+    // 请求相册访问权限
       const { status } = await MediaLibrary.requestPermissionsAsync();
       if (status !== 'granted') {
+      // 如果用户拒绝权限请求，显示提示并退出函数
         Alert.alert('权限提示', '需要相册权限来访问您的媒体文件');
         setLoading(false);
         return;
       }
 
-      // 获取图片
+      // 获取图片资源
       const photosResult = await MediaLibrary.getAssetsAsync({
-        mediaTypes: ['photo'],
-        first: 50,
-        sortBy: ['creationTime'],
+        mediaTypes: ['photo'],  // 只获取图片类型
+        first: 50,              // 限制获取数量为50张
+        sortBy: ['creationTime'], // 按创建时间排序
       });
-      console.log('photosResult', photosResult);
-      setPhotos(photosResult.assets);
+      console.log('photosResult', photosResult);  // 输出调试信息
+      setPhotos(photosResult.assets);  // 更新状态中的图片列表
 
-      // 获取视频
+      // 获取视频资源
       const videosResult = await MediaLibrary.getAssetsAsync({
-        mediaTypes: ['video'],
-        first: 50,
-        sortBy: ['creationTime'],
+        mediaTypes: ['video'],  // 只获取视频类型
+        first: 50,              // 限制获取数量为50个
+        sortBy: ['creationTime'], // 按创建时间排序
       });
-      console.log('videosResult', videosResult);
-      setVideos(videosResult.assets);
+      console.log('videosResult', videosResult);  // 输出调试信息
+      setVideos(videosResult.assets);  // 更新状态中的视频列表
     } catch (error) {
+    // 捕获并处理可能出现的错误
       console.error('加载媒体文件失败:', error);
       Alert.alert('错误', '加载媒体文件时出现错误');
     } finally {
+    // 无论成功或失败，最终都会关闭加载状态
       setLoading(false);
     }
   };
