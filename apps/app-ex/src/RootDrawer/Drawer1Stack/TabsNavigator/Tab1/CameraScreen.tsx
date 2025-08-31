@@ -5,7 +5,7 @@ import { CameraView, useCameraPermissions, BarcodeScanningResult } from 'expo-ca
 export function CameraScreen() {
   const [cameraType, setCameraType] = useState<'back' | 'front'>('back');
   const [permission, requestPermission] = useCameraPermissions();
-  const [scanning, setScanning] = useState(false);
+  const [scanning, setScanning] = useState(true);
   const [recording, setRecording] = useState(false);
   const [cameraReady, setCameraReady] = useState(false);
   const [videoUri, setVideoUri] = useState<string | null>(null);
@@ -33,6 +33,7 @@ export function CameraScreen() {
     if (!cameraRef.current) return;
     try {
       setAction('picture');
+      cameraRef.current.mode = 'picture';
       const photo = await cameraRef.current.takePictureAsync();
       Alert.alert('拍照成功', photo.uri);
       console.log('Photo:', photo);
@@ -49,6 +50,7 @@ export function CameraScreen() {
     }
     setRecording(true);
     await setAction('video');
+    cameraRef.current.mode = 'video';
 
     
     try {
@@ -60,6 +62,7 @@ export function CameraScreen() {
       Alert.alert('录像失败', `${error}`);
     } finally {
       setRecording(false);
+      cameraRef.current.mode = 'picture';
     }
   };
   
@@ -79,24 +82,26 @@ export function CameraScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      {scanning ? (
-        <CameraView
-          style={{ flex: 1 }}
-          facing={cameraType}
-          onBarCodeScanned={handleBarCodeScanned}
-          onCameraReady={() => setCameraReady(true)}
-        />
-
-      ) : (
-        <CameraView
-          mode={action}
-          style={{ flex: 1 }}
-          facing={cameraType}
-          ref={cameraRef}
-          onCameraReady={() => setCameraReady(true)}
-        />
-      
-      )}
+    {scanning ? (
+      <CameraView
+        style={{ flex: 1 }}
+        facing={cameraType}
+        onCameraReady={() => setCameraReady(true)}
+        onBarCodeScanned={(result) => {
+          Alert.alert('扫码成功', `类型: ${result.type}\n内容: ${result.data}`);
+          console.log(result);
+          // setScanning(false); // 可以暂时不关闭扫码，便于连续测试
+        }}
+      />
+    ) : (
+      <CameraView
+        mode={action}
+        style={{ flex: 1 }}
+        facing={cameraType}
+        ref={cameraRef}
+        onCameraReady={() => setCameraReady(true)}
+      />
+    )}
 
 
       <View style={styles.controls}>
