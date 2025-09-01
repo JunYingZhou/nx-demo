@@ -53,7 +53,8 @@ import {
   SafeAreaView,
   StatusBar,
   Modal,
-  ActivityIndicator
+  ActivityIndicator,
+  Share
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
@@ -62,7 +63,9 @@ import { VideoView  } from 'expo-video';
 import { Video, ResizeMode } from 'expo-av';
 const { width } = Dimensions.get('window');
 const ITEM_WIDTH = (width - 48) / 3; // 3列布局，左右各16px边距，中间16px间距
-
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import { WebView } from 'react-native-webview';
 export function AlbumScreen() {
   const [image, setImage] = useState<string | null>(null);
   const [photos, setPhotos] = useState<MediaLibrary.Asset[]>([]);
@@ -72,6 +75,8 @@ export function AlbumScreen() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'photos' | 'videos' | 'documents'>('photos');
   const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewDocumentVisible, setPreviewDocumentVisible] = useState(false);
+  const [previewDocumentUri, setPreviewDocumentUri] = useState<string | null>(null);
   const [previewIndex, setPreviewIndex] = useState(0);
   const [previewData, setPreviewData] = useState<any[]>([]);
   const [previewType, setPreviewType] = useState<'selected' | 'photos' | 'videos'>('selected');
@@ -257,28 +262,37 @@ export function AlbumScreen() {
         { text: '取消', style: 'cancel' },
         ...(isImage ? [{ text: '预览', onPress: () => previewDocument(index) }] : []),
         { text: '重命名', onPress: () => console.log('重命名文档', index) },
-        { text: '分享', onPress: () => console.log('分享文档', index) },
+        // { text: '分享', onPress: () => console.log('分享文档', index) },
         { text: '删除', style: 'destructive', onPress: () => deleteDocument(index) },
       ]
     );
   };
 
-  // 预览文档（仅支持图片）
-  const previewDocument = (index: number) => {
+
+/**
+ * 预览文档的函数, 用
+ * @param index - 要预览的文档在documents数组中的索引
+ */
+  const previewDocument = async (index: number) => {
     const document = documents[index];
     if (!document || !document.uri) return;
+    console.log('document', document);
 
-    const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(document.name);
-    if (!isImage) {
-      Alert.alert('提示', '只能预览图片类型的文档');
-      return;
-    }
+    // 1.
+    // 使用WebView预览，本机不可以直接预览
+    // setPreviewDocumentUri(document.uri);
+    // setPreviewDocumentVisible(true);
 
-    setPreviewData([document]);
-    setPreviewType('selected');
-    setPreviewIndex(0);
-    setPreviewVisible(true);
+    // 2.
+    // ✅ 支持 Word / PDF / Excel / PPT
+    // ✅ 调用系统应用打开
+    // ❌ 不能在 App 内直接预览
+    // await FileSystem.downloadAsync(document.uri, FileSystem.documentDirectory + document.name);
+    await Sharing.shareAsync(document.uri)
+
   };
+
+
 
   // 点击小图预览
   const handlePreview = (index: number, type: 'selected' | 'photos' | 'videos' = 'selected') => {
@@ -416,12 +430,12 @@ export function AlbumScreen() {
     const fileIcon = getFileIcon(item.name);
     const fileSize = item.size ? formatFileSize(item.size) : '';
 
-    const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(item.name);
+    // const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(item.name);
 
     return (
       <TouchableOpacity
         style={styles.documentItem}
-        onPress={() => isImage && previewDocument(index)}
+        onPress={() => previewDocument(index)}
       >
         <View style={styles.documentIcon}>
           <Text style={styles.documentIconText}>{fileIcon}</Text>
@@ -649,6 +663,18 @@ export function AlbumScreen() {
           </TouchableOpacity>
         </View>
       </Modal>
+
+      {/* 预览文档 , 不用三元，直接判断是否存在 */}
+      {previewDocumentUri ? (
+        <WebView
+          source={{ uri: previewDocumentUri }}
+          style={{ flex: 1 }}
+        />
+      ) : (
+        <></>
+      )}
+      
+
     </SafeAreaView>
   );
 }
