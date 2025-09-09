@@ -11,7 +11,7 @@ import {
 const features = [
   { key: "camera", title: "相机\n拍照/录像/扫码", screen: "Camera" },
   { key: "album", title: "相册 / 文件", screen: "Album" },
-  { key: "mic", title: "麦克风", screen: "Mic" },
+  { key: "Microphone", title: "麦克风", screen: "Microphone" },
   { key: "gps", title: "定位 / GPS", screen: "Gps" },
   { key: "sensor", title: "传感器", screen: "Sensor" },
   { key: "bluetooth", title: "蓝牙", screen: "Bluetooth" },

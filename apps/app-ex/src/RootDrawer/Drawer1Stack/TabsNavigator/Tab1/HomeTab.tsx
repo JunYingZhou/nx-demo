@@ -5,6 +5,7 @@ import { HomeScreen } from './HomeScreen';
 import { HomeDetailScreen } from './HomeDetailScreen';
 import { CameraScreen } from './CameraScreen';
 import { AlbumScreen } from './AlbumScreen'
+import { MicrophoneScreen } from './MicrophoneScreen'
 
 
 
@@ -18,7 +19,7 @@ export function HomeTab() {
       <Stack.Screen name="HomeDetail" component={HomeDetailScreen} options={{ title: "详情页" }} />
       <Stack.Screen name="Camera" component={CameraScreen} options={{ title: "相机" }} />
       <Stack.Screen name="Album" component={AlbumScreen} options={{ title: "媒体" }} />
-      
+      <Stack.Screen name="Microphone" component={MicrophoneScreen} options={{ title: "麦克风" }} />
     </Stack.Navigator>
   );
 }
