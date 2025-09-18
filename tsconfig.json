@@ -2,8 +2,6 @@
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "files": [],
-  // "typescript.validate.enable": false,
-  // "javascript.validate.enable": false,
   "references": [
     {
       "path": "./apps/app-rn"
@@ -22,6 +20,9 @@
     },
     {
       "path": "./apps/app-ex"
+    },
+    {
+      "path": "./apps/api"
     }
   ]
 }
