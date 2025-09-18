@@ -1,11 +1,12 @@
 {
   "expo": {
     "name": "AppEx",
-    "slug": "@monorepo1/app-ex",
+    "slug": "app-ex",
+    "owner": "ryanzhou123",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "@monorepo1/app-ex",
+    "scheme": "app-ex",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -16,7 +17,11 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": [
+        "android.permission.CAMERA"
+      ],
+      "package": "com.anonymous.monorepo1appex"
     },
     "web": {
       "bundler": "metro",
@@ -33,6 +38,11 @@
         }
       ],
       "expo-barcode-scanner"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "83e37785-9d39-4707-bb0e-37f94d386bec"
+      }
+    }
   }
 }
