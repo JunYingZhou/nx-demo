@@ -1,12 +1,11 @@
 // Uncomment this line to use CSS modules
 // import styles from './app.module.scss';
-import NxWelcome from "./nx-welcome";
+// import NxWelcome from "./nx-welcome";
+import { Router } from "../router/index";
 
 export function App() {
   return (
-    <div>
-      <NxWelcome title="@monorepo1/app-r"/>
-    </div>
+    <Router />
   );
 }
 

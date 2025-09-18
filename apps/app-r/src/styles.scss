@@ -1,1 +1,188 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* CSS Variables: Theme */
+:root {
+  --color-bg: #0b1220;
+  --color-surface: #121a2b;
+  --color-surface-2: #0f1524;
+  --color-border: #22314f;
+  --color-primary: #4f8cff;
+  --color-primary-600: #3c77ee;
+  --color-text: #e6eefc;
+  --color-muted: #a6b3cc;
+  --shadow-1: 0 4px 14px rgba(0,0,0,0.35);
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: radial-gradient(1200px 600px at 10% -10%, rgba(79, 140, 255, 0.18), transparent 40%),
+              radial-gradient(1000px 500px at 100% 0%, rgba(111, 66, 193, 0.14), transparent 40%),
+              var(--color-bg);
+  color: var(--color-text);
+}
+
+a { color: inherit; text-decoration: none; }
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* App Shell */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: linear-gradient(180deg, rgba(18,26,43,0.9), rgba(18,26,43,0.85));
+  backdrop-filter: saturate(180%) blur(10px);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-1);
+}
+
+.app-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+}
+
+.brand__logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--color-primary), #6f42c1);
+  box-shadow: 0 6px 18px rgba(79, 140, 255, 0.35);
+}
+
+.brand__title { letter-spacing: 0.3px; }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  min-width: 240px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+}
+
+.search input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background: linear-gradient(180deg, var(--color-surface), var(--color-surface-2));
+  color: var(--color-text);
+}
+
+.btn--primary {
+  border-color: transparent;
+  background: linear-gradient(180deg, var(--color-primary), var(--color-primary-600));
+}
+
+/* Navigation */
+.app-nav {
+  background: linear-gradient(180deg, rgba(11,18,32,0.6), rgba(11,18,32,0.5));
+  border-bottom: 1px solid var(--color-border);
+}
+
+.app-nav__inner {
+  display: flex;
+  gap: 12px;
+  height: 48px;
+  align-items: center;
+}
+
+.nav-link {
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: var(--color-muted);
+}
+
+.nav-link:hover {
+  color: var(--color-text);
+  background: rgba(79, 140, 255, 0.08);
+}
+
+/* Content */
+.app-content {
+  flex: 1;
+}
+
+.content-inner {
+  padding: 16px 0 24px;
+}
+
+/* Footer */
+.app-footer {
+  border-top: 1px solid var(--color-border);
+  background: linear-gradient(0deg, rgba(18,26,43,0.75), rgba(18,26,43,0.6));
+}
+
+.app-footer__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 56px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(79, 140, 255, 0.15);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  font-size: 12px;
+}
+
+/* Utilities */
+.muted { color: var(--color-muted); }
+
+@media (max-width: 640px) {
+  .search { min-width: 160px; }
+  .app-header__inner { height: 56px; }
+  .app-nav__inner { height: 44px; }
+}

@@ -19,6 +19,7 @@ const features = [
   { key: "biometric", title: "指纹 / FaceID", screen: "Biometric" },
   { key: "vibration", title: "震动", screen: "Vibration" },
   { key: "battery", title: "电池 & 网络", screen: "Battery" },
+  { key: "notification", title: "提示", screen: "Notification" },
 ];
 
 export function HomeScreen({ navigation }) {
