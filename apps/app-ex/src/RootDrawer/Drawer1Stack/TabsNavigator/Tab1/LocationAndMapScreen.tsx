@@ -68,12 +68,20 @@ export function LocationAndMapScreen() {
       {errorMsg && <Text>{errorMsg}</Text>}
       {location && (
         <View style={styles.webviewWrap}>
-          <WebView
+          {/* <WebView
             originWhitelist={["*"]}
             source={{ html }}
             javaScriptEnabled
             domStorageEnabled
             mixedContentMode="always"
+            style={styles.webview}
+          /> */}
+          <WebView
+            source={{ uri: 'https://m.amap.com/' }}
+            javaScriptEnabled
+            domStorageEnabled
+            mixedContentMode="always"
+            geolocationEnabled
             style={styles.webview}
           />
         </View>
