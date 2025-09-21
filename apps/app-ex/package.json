@@ -2,10 +2,16 @@
   "name": "@monorepo1/app-ex",
   "version": "0.0.1",
   "private": true,
+  "expo": {
+    "android": {
+      "enableProguardInReleaseBuilds": true
+    }
+  },
+  "main": "index.js",
   "scripts": {
-    "eas-build-post-install": "cd ../ && node tools/scripts/eas-build-post-install.mjs . app-ex",
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "android:release": "set NODE_ENV=production && eas build --platform android"
   },
   "dependencies": {
     "@expo/metro-config": "*",
@@ -19,13 +25,13 @@
     "eas-cli": "^16.19.3",
     "expo": "^53.0.22",
     "expo-av": "^15.1.7",
-    "expo-barcode-scanner": "^13.0.1",
     "expo-camera": "~16.1.11",
     "expo-document-picker": "^13.1.6",
     "expo-file-system": "^18.1.11",
     "expo-image-picker": "^16.1.4",
-    "expo-location": "^19.0.7",
+    "expo-location": "^18.1.6",
     "expo-media-library": "^17.1.7",
+    "expo-modules-core": "^2.5.0",
     "expo-sharing": "^13.1.5",
     "expo-splash-screen": "*",
     "expo-status-bar": "*",
@@ -37,11 +43,11 @@
     "react": "*",
     "react-native": "^0.79.5",
     "react-native-amap3d": "^3.2.4",
-    "react-native-gesture-handler": "^2.28.0",
+    "react-native-gesture-handler": "^2.24.0",
     "react-native-get-random-values": "^1.11.0",
-    "react-native-reanimated": "^4.1.0",
-    "react-native-safe-area-context": "^5.6.1",
-    "react-native-screens": "^4.15.4",
+    "react-native-reanimated": "^3.17.5",
+    "react-native-safe-area-context": "^5.4.0",
+    "react-native-screens": "^4.11.1",
     "react-native-svg": "*",
     "react-native-svg-transformer": "*",
     "react-native-vector-icons": "^10.3.0",

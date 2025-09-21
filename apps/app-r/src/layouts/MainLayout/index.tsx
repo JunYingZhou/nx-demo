@@ -16,8 +16,8 @@ export function MainLayout() {
             <div className="muted">欢迎使用 AppR</div>
             <span className="badge">{isAuthenticated ? '已登录' : '未登录'}</span>
           </div>
-          {/* <Outlet /> */}
-          <ProfilePage />
+          <Outlet />
+          {/* <ProfilePage /> */}
         </div>
       </main>
       <FooterLayout />

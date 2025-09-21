@@ -15,8 +15,8 @@ export function Router() {
     <BrowserRouter>
     <Routes>
       <Route path="/" element={<MainLayout />}>
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/login" element={<LoginPage />} />
+        {/* <Route path="/profile" element={<ProfilePage />} /> */}
+        {/* <Route path="/login" element={<LoginPage />} /> */}
       </Route>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
