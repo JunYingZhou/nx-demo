@@ -39,6 +39,7 @@ export function CameraScreen() {
       cameraRef.current.mode = 'picture';
       const photo = await cameraRef.current.takePictureAsync();
       // Alert.alert('拍照成功', photo.uri);
+      Alert.alert('拍照成功', photo.uri);
       console.log('Photo:', photo);
     } catch (err) {
       console.error('拍照失败', err);
@@ -62,6 +63,8 @@ export function CameraScreen() {
       const video = await cameraRef.current.recordAsync({ maxDuration: 60 });
       setVideoUri(video.uri);
       Alert.alert('录像完成', video.uri);
+      Alert.alert('录像完成', video.uri);
+      console.log('Video:', video);
     } catch (error) {
       console.error('录像失败', error);
       Alert.alert('录像失败', `${error}`);
