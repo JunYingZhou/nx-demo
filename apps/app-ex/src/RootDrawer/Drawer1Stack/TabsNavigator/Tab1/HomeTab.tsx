@@ -7,6 +7,7 @@ import { CameraScreen } from './CameraScreen';
 import { AlbumScreen } from './AlbumScreen'
 import { MicrophoneScreen } from './MicrophoneScreen'
 import { LocationAndMapScreen } from './LocationAndMapScreen';
+import { NotificationScreen } from './NotificationScreen';
 
 
 
@@ -22,6 +23,7 @@ export function HomeTab() {
       <Stack.Screen name="Album" component={AlbumScreen} options={{ title: "媒体" }} />
       <Stack.Screen name="Microphone" component={MicrophoneScreen} options={{ title: "麦克风" }} />
       <Stack.Screen name="LocationAndMap" component={LocationAndMapScreen} options={{ title: "定位和地图" }} />
+      <Stack.Screen name="Notification" component={NotificationScreen} options={{ title: "通知" }} />
     </Stack.Navigator>
   );
 }
