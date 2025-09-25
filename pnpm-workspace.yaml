@@ -2,5 +2,6 @@ packages:
   - "packages/*"
   - "apps/*"
   - "shared/*"
+  - "app-rn1"
 autoInstallPeers: true
 strictPeerDependencies: false

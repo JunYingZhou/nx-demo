@@ -15,6 +15,11 @@
     "expo:build": "nx run app-ex:build"
   },
   "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "shared/*"
+  ],
   "dependencies": {
     "@expo/metro-config": "~0.20.14",
     "@expo/metro-runtime": "~5.0.4",
@@ -36,8 +41,8 @@
     "@nx/esbuild": "21.5.2",
     "@nx/eslint": "21.5.2",
     "@nx/eslint-plugin": "21.5.2",
-    "@nx/expo": "^21.4.1",
-    "@nx/js": "21.5.2",
+    "@nx/expo": "21.5.3",
+    "@nx/js": "21.5.3",
     "@nx/node": "^21.5.2",
     "@nx/react": "21.4.1",
     "@nx/react-native": "21.4.1",
@@ -61,6 +66,10 @@
     "esbuild": "^0.19.2",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
+    "eslint-plugin-import": "2.31.0",
+    "eslint-plugin-jsx-a11y": "6.10.1",
+    "eslint-plugin-react": "7.35.0",
+    "eslint-plugin-react-hooks": "5.0.0",
     "jiti": "2.4.2",
     "jsdom": "~22.1.0",
     "metro-config": "~0.82.4",

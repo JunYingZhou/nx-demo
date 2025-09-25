@@ -23,6 +23,15 @@
     },
     {
       "path": "./apps/api"
+    },
+    {
+      "path": "./app-rn1"
+    },
+    {
+      "path": "./apps/app-rn2"
+    },
+    {
+      "path": "./apps/app-expo"
     }
   ]
 }
