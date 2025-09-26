@@ -15,6 +15,11 @@
     "expo:build": "nx run app-ex:build"
   },
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "shared/*"
+  ],
   "dependencies": {
     "@expo/metro-config": "~0.20.14",
     "@expo/metro-runtime": "~5.0.4",
@@ -33,6 +38,8 @@
     "@babel/runtime": "~7.27.6",
     "@eslint/js": "^9.8.0",
     "@expo/cli": "~0.24.14",
+    "@nrwl/react-native": "^19.8.4",
+    "@nrwl/workspace": "^19.8.4",
     "@nx/esbuild": "21.5.2",
     "@nx/eslint": "21.5.2",
     "@nx/eslint-plugin": "21.5.2",
