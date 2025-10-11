@@ -17,7 +17,7 @@ const features = [
   { key: "bluetooth", title: "蓝牙", screen: "Bluetooth" },
   { key: "nfc", title: "NFC" },
   { key: "biometric", title: "指纹 / FaceID", screen: "Biometric" },
-  { key: "vibration", title: "震动", screen: "Vibration" },
+  { key: "vibration", title: "震动 / 铃声", screen: "VibrationAndSound" },
   { key: "battery", title: "电池 & 网络", screen: "Battery" },
   { key: "notification", title: "提示", screen: "Notification" },
 ];
