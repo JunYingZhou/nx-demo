@@ -4,9 +4,10 @@
   "private": true,
   "dependencies": {
     "@react-native/metro-config": "*",
+    "hermes-engine": "^0.11.0",
+    "metro-config": "*",
     "react": "*",
     "react-native": "*",
-    "react-native-svg": "*",
-    "metro-config": "*"
+    "react-native-svg": "*"
   }
 }
