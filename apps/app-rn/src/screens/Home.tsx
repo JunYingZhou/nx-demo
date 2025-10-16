@@ -10,6 +10,7 @@ const Home = () => {
     <View>
       <Text>Home</Text>
       <Button title="Map" onPress={() => navigation.navigate(NAVIGATION.map as never)} />
+      <Button title="Hotel" onPress={() => navigation.navigate(NAVIGATION.Hotel as never)} />
       <Button title="BlueTooth" onPress={() => navigation.navigate(NAVIGATION.blueTooth as never)} />
     </View>
   );

@@ -4,6 +4,7 @@ import Map from '../../screens/Map';
 import { NAVIGATION as NAVIGATION_CONSTANTS } from '../../constants/navigation';
 import Home from '../../screens/Home';
 import BlueTooth from '../../screens/BlueTooth';
+import Hotel from '../../screens/Hotel';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +17,7 @@ const HomeNavigator = () => {
     <Stack.Navigator>
       <Stack.Screen name={NAVIGATION_CONSTANTS.home} component={Home} options={defaultScreenOptions}/>
       <Stack.Screen name={NAVIGATION_CONSTANTS.map} component={Map} options={defaultScreenOptions}/>
+      <Stack.Screen name={NAVIGATION_CONSTANTS.Hotel} component={Hotel} options={defaultScreenOptions}/>
       <Stack.Screen name={NAVIGATION_CONSTANTS.blueTooth} component={BlueTooth} options={defaultScreenOptions}/>
     </Stack.Navigator>
   );
