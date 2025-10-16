@@ -16,8 +16,8 @@ import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import { Platform } from 'react-native';
 import { AMapSdk } from 'react-native-amap3d';
 AMapSdk.init(Platform.select({
-  android: 'e10d14fadb21e1cfdfa2d6a73041a81c',
-  ios: 'e10d14fadb21e1cfdfa2d6a73041a81c',
+  android: 'cd4e29c5f2ef7bd32c5b2ffa7eb1bc9c',
+  ios: 'cd4e29c5f2ef7bd32c5b2ffa7eb1bc9c',
 }));
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';

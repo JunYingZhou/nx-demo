@@ -20,7 +20,7 @@ import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AMapSdk } from 'react-native-amap3d';
-AMapSdk.init('e10d14fadb21e1cfdfa2d6a73041a81c');
+AMapSdk.init('cd4e29c5f2ef7bd32c5b2ffa7eb1bc9c');
 export const App = () => {
   const [whatsNextYCoord, setWhatsNextYCoord] = useState<number>(0);
   const scrollViewRef = useRef<null | ScrollView>(null);

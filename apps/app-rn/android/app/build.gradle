@@ -118,9 +118,9 @@ dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
         
-    implementation 'com.amap.api:3dmap:latestVersion'
-    implementation 'com.amap.api:search:latestVersion'
-    implementation 'com.amap.api:location:latestVersion'
+    // 高德 SDK，指定版本号
+    implementation 'com.amap.api:3dmap:9.6.0'
+
 
     if (hermesEnabled.toBoolean()) {
         // 如果没有安装 hermes-engine，这里会报错

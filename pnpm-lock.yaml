@@ -376,6 +376,9 @@ importers:
       '@react-navigation/native':
         specifier: ^7.1.17
         version: 7.1.18(react-native@0.79.6)(react@19.0.0)
+      '@react-navigation/native-stack':
+        specifier: ^7.3.25
+        version: 7.3.28(@react-navigation/native@7.1.18)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native@0.79.6)(react@19.0.0)
       metro-config:
         specifier: '*'
         version: 0.82.5
@@ -384,13 +387,13 @@ importers:
         version: 19.0.0
       react-native:
         specifier: '*'
-        version: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
-      react-native-amap-navi:
-        specifier: ^0.2.0
-        version: 0.2.0(react-native@0.79.6)
+        version: 0.79.6(@babel/core@7.28.4)(react@19.0.0)
       react-native-amap3d:
         specifier: ^3.2.4
         version: 3.2.4
+      react-native-ble-plx:
+        specifier: ^3.5.0
+        version: 3.5.0(react-native@0.79.6)(react@19.0.0)
       react-native-safe-area-context:
         specifier: ^5.4.0
         version: 5.6.1(react-native@0.79.6)(react@19.0.0)
@@ -408,7 +411,7 @@ importers:
         version: 2.3.3(react-native@0.79.6)(react@19.0.0)
       zustand:
         specifier: ^5.0.8
-        version: 5.0.8(@types/react@19.0.14)(react@19.0.0)
+        version: 5.0.8(react@19.0.0)
     devDependencies:
       '@react-native/codegen':
         specifier: ^0.79.6
@@ -472,7 +475,7 @@ packages:
       '@babel/types': 7.28.4
       '@jridgewell/remapping': 2.3.5
       convert-source-map: 2.0.0
-      debug: 4.4.3(supports-color@8.1.1)
+      debug: 4.4.3
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -541,7 +544,7 @@ packages:
       '@babel/core': 7.28.4
       '@babel/helper-compilation-targets': 7.27.2
       '@babel/helper-plugin-utils': 7.27.1
-      debug: 4.4.3(supports-color@8.1.1)
+      debug: 4.4.3
       lodash.debounce: 4.0.8
       resolve: 1.22.10
     transitivePeerDependencies:
@@ -1779,7 +1782,7 @@ packages:
       '@babel/parser': 7.28.4
       '@babel/template': 7.27.2
       '@babel/types': 7.28.4
-      debug: 4.4.3(supports-color@8.1.1)
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -6687,7 +6690,7 @@ packages:
       react-native: ^0.0.0-0 || >=0.65 <1.0
     dependencies:
       merge-options: 3.0.4
-      react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
+      react-native: 0.79.6(@babel/core@7.28.4)(react@19.0.0)
     dev: false
 
   /@react-native-community/cli-clean@13.6.9:
@@ -6899,7 +6902,7 @@ packages:
       react-native: '*'
     dependencies:
       react: 19.0.0
-      react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
+      react-native: 0.79.6(@babel/core@7.28.4)(react@19.0.0)
     dev: false
 
   /@react-native/assets-registry@0.79.6:
@@ -6983,6 +6986,28 @@ packages:
       invariant: 2.2.4
       nullthrows: 1.1.1
       yargs: 17.7.2
+
+  /@react-native/community-cli-plugin@0.79.6:
+    resolution: {integrity: sha512-ZHVst9vByGsegeaddkD2YbZ6NvYb4n3pD9H7Pit94u+NlByq2uBJghoOjT6EKqg+UVl8tLRdi88cU2pDPwdHqA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@react-native-community/cli': '*'
+    peerDependenciesMeta:
+      '@react-native-community/cli':
+        optional: true
+    dependencies:
+      '@react-native/dev-middleware': 0.79.6
+      chalk: 4.1.2
+      debug: 2.6.9
+      invariant: 2.2.4
+      metro: 0.82.5
+      metro-config: 0.82.5
+      metro-core: 0.82.5
+      semver: 7.7.3
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
 
   /@react-native/community-cli-plugin@0.79.6(@react-native-community/cli@13.6.9):
     resolution: {integrity: sha512-ZHVst9vByGsegeaddkD2YbZ6NvYb4n3pD9H7Pit94u+NlByq2uBJghoOjT6EKqg+UVl8tLRdi88cU2pDPwdHqA==}
@@ -7093,6 +7118,22 @@ packages:
       react: 19.0.0
       react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
 
+  /@react-native/virtualized-lists@0.79.6(react-native@0.79.6)(react@19.0.0):
+    resolution: {integrity: sha512-khA/Hrbb+rB68YUHrLubfLgMOD9up0glJhw25UE3Kntj32YDyuO0Tqc81ryNTcCekFKJ8XrAaEjcfPg81zBGPw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/react': ^19.0.0
+      react: '*'
+      react-native: '*'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      invariant: 2.2.4
+      nullthrows: 1.1.1
+      react: 19.0.0
+      react-native: 0.79.6(@babel/core@7.28.4)(react@19.0.0)
+
   /@react-navigation/bottom-tabs@7.4.9(@react-navigation/native@7.1.18)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native@0.79.6)(react@19.0.0):
     resolution: {integrity: sha512-Q7oUEB3YjwGyY/OLzkq+tv0STe2d9m8NAJOtKsd6GtN/LtrHmG7LdpOm5qitL60+gdY1zY7SWUD4am5c33RssA==}
     peerDependencies:
@@ -7106,7 +7147,7 @@ packages:
       '@react-navigation/native': 7.1.18(react-native@0.79.6)(react@19.0.0)
       color: 4.2.3
       react: 19.0.0
-      react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
+      react-native: 0.79.6(@babel/core@7.28.4)(react@19.0.0)
       react-native-safe-area-context: 5.6.1(react-native@0.79.6)(react@19.0.0)
       react-native-screens: 4.16.0(react-native@0.79.6)(react@19.0.0)
     transitivePeerDependencies:
@@ -7143,7 +7184,7 @@ packages:
       '@react-navigation/native': 7.1.18(react-native@0.79.6)(react@19.0.0)
       color: 4.2.3
       react: 19.0.0
-      react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
+      react-native: 0.79.6(@babel/core@7.28.4)(react@19.0.0)
       react-native-safe-area-context: 5.6.1(react-native@0.79.6)(react@19.0.0)
       use-latest-callback: 0.2.6(react@19.0.0)
       use-sync-external-store: 1.6.0(react@19.0.0)
@@ -7161,7 +7202,7 @@ packages:
       '@react-navigation/elements': 2.6.5(@react-navigation/native@7.1.18)(react-native-safe-area-context@5.6.1)(react-native@0.79.6)(react@19.0.0)
       '@react-navigation/native': 7.1.18(react-native@0.79.6)(react@19.0.0)
       react: 19.0.0
-      react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
+      react-native: 0.79.6(@babel/core@7.28.4)(react@19.0.0)
       react-native-safe-area-context: 5.6.1(react-native@0.79.6)(react@19.0.0)
       react-native-screens: 4.16.0(react-native@0.79.6)(react@19.0.0)
       warn-once: 0.1.1
@@ -7180,7 +7221,7 @@ packages:
       fast-deep-equal: 3.1.3
       nanoid: 3.3.11
       react: 19.0.0
-      react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
+      react-native: 0.79.6(@babel/core@7.28.4)(react@19.0.0)
       use-latest-callback: 0.2.6(react@19.0.0)
     dev: false
 
@@ -10733,6 +10774,17 @@ packages:
       ms: 2.1.2
     dev: true
 
+  /debug@4.4.3:
+    resolution: {integrity: sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.3
+
   /debug@4.4.3(supports-color@8.1.1):
     resolution: {integrity: sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==}
     engines: {node: '>=6.0'}
@@ -12892,7 +12944,7 @@ packages:
     engines: {node: '>= 14'}
     dependencies:
       agent-base: 7.1.4
-      debug: 4.4.3(supports-color@8.1.1)
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -15124,7 +15176,7 @@ packages:
     resolution: {integrity: sha512-vpMDxkGIB+MTN8Af5hvSAanc6zXQipsAUO+XUx3PCQieKUfLwdoa8qaZ1WAQYRpaU+CJ8vhBcxtzzo3d9IsCIQ==}
     engines: {node: '>=18.18'}
     dependencies:
-      debug: 4.4.3(supports-color@8.1.1)
+      debug: 4.4.3
       fb-watchman: 2.0.2
       flow-enums-runtime: 0.0.6
       graceful-fs: 4.2.11
@@ -15384,7 +15436,7 @@ packages:
       chalk: 4.1.2
       ci-info: 2.0.0
       connect: 3.7.0
-      debug: 4.4.3(supports-color@8.1.1)
+      debug: 4.4.3
       error-stack-parser: 2.1.4
       flow-enums-runtime: 0.0.6
       graceful-fs: 4.2.11
@@ -17197,18 +17249,21 @@ packages:
     resolution: {integrity: sha512-x3Ax3kNSMIIkyVYhWPyO09bu0uttcAIoecO/um/rKGQ4EltYWVYtyiGkS/3xMynrbVQdS69Jhlv8FXUEZehlzA==}
     dev: false
 
-  /react-native-amap-navi@0.2.0(react-native@0.79.6):
-    resolution: {integrity: sha512-dq6EbFa/RyNd1UeVUq3JmGkFxFEZW7HrcZWk08HYgDgJ1wJmbmXsK5p9x2r4S3aiPk/iT/zsmpVYv9QeRviNgg==}
-    peerDependencies:
-      react-native: ^0.51.2
-    dependencies:
-      react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
-    dev: false
-
   /react-native-amap3d@3.2.4:
     resolution: {integrity: sha512-Cp7Tqd87arrxoBQdUGwmtjv7BuSt1XAqc/G+a/woI/pJqlUQScMqW/iHNJKC4jWr3wrJeaOYcjkOouoWCdDoOw==}
     dependencies:
       supercluster: 7.1.5
+    dev: false
+
+  /react-native-ble-plx@3.5.0(react-native@0.79.6)(react@19.0.0):
+    resolution: {integrity: sha512-PeSnRswHLwLRVMQkOfDaRICtrGmo94WGKhlSC09XmHlqX2EuYgH+vNJpGcLkd8lyiYpEJyf8wlFAdj9Akliwmw==}
+    engines: {node: '>= 18.0.0'}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+    dependencies:
+      react: 19.0.0
+      react-native: 0.79.6(@babel/core@7.28.4)(react@19.0.0)
     dev: false
 
   /react-native-edge-to-edge@1.6.0(react-native@0.79.6)(react@19.0.0):
@@ -17260,7 +17315,7 @@ packages:
       react-native: '*'
     dependencies:
       react: 19.0.0
-      react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
+      react-native: 0.79.6(@babel/core@7.28.4)(react@19.0.0)
     dev: false
 
   /react-native-reanimated@3.19.3(@babel/core@7.28.4)(react-native@0.79.6)(react@19.0.0):
@@ -17296,7 +17351,7 @@ packages:
       react-native: '*'
     dependencies:
       react: 19.0.0
-      react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
+      react-native: 0.79.6(@babel/core@7.28.4)(react@19.0.0)
     dev: false
 
   /react-native-screens@4.16.0(react-native@0.79.6)(react@19.0.0):
@@ -17307,7 +17362,7 @@ packages:
     dependencies:
       react: 19.0.0
       react-freeze: 1.0.4(react@19.0.0)
-      react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
+      react-native: 0.79.6(@babel/core@7.28.4)(react@19.0.0)
       react-native-is-edge-to-edge: 1.2.1(react-native@0.79.6)(react@19.0.0)
       warn-once: 0.1.1
     dev: false
@@ -17363,7 +17418,7 @@ packages:
       css-select: 5.2.2
       css-tree: 1.1.3
       react: 19.0.0
-      react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
+      react-native: 0.79.6(@babel/core@7.28.4)(react@19.0.0)
       warn-once: 0.1.1
 
   /react-native-toast-message@2.3.3(react-native@0.79.6)(react@19.0.0):
@@ -17373,7 +17428,7 @@ packages:
       react-native: '*'
     dependencies:
       react: 19.0.0
-      react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
+      react-native: 0.79.6(@babel/core@7.28.4)(react@19.0.0)
     dev: false
 
   /react-native-vector-icons@10.3.0:
@@ -17461,6 +17516,61 @@ packages:
       '@react-native/normalize-colors': 0.79.6
       '@react-native/virtualized-lists': 0.79.6(@types/react@19.0.14)(react-native@0.79.6)(react@19.0.0)
       '@types/react': 19.0.14
+      abort-controller: 3.0.0
+      anser: 1.4.10
+      ansi-regex: 5.0.1
+      babel-jest: 29.7.0(@babel/core@7.28.4)
+      babel-plugin-syntax-hermes-parser: 0.25.1
+      base64-js: 1.5.1
+      chalk: 4.1.2
+      commander: 12.1.0
+      event-target-shim: 5.0.1
+      flow-enums-runtime: 0.0.6
+      glob: 7.2.3
+      invariant: 2.2.4
+      jest-environment-node: 29.7.0
+      memoize-one: 5.2.1
+      metro-runtime: 0.82.5
+      metro-source-map: 0.82.5
+      nullthrows: 1.1.1
+      pretty-format: 29.7.0
+      promise: 8.3.0
+      react: 19.0.0
+      react-devtools-core: 6.1.5
+      react-refresh: 0.14.2
+      regenerator-runtime: 0.13.11
+      scheduler: 0.25.0
+      semver: 7.7.3
+      stacktrace-parser: 0.1.11
+      whatwg-fetch: 3.6.20
+      ws: 6.2.3
+      yargs: 17.7.2
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@react-native-community/cli'
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+
+  /react-native@0.79.6(@babel/core@7.28.4)(react@19.0.0):
+    resolution: {integrity: sha512-kvIWSmf4QPfY41HC25TR285N7Fv0Pyn3DAEK8qRL9dA35usSaxsJkHfw+VqnonqJjXOaoKCEanwudRAJ60TBGA==}
+    engines: {node: '>=18'}
+    hasBin: true
+    peerDependencies:
+      '@types/react': ^19.0.0
+      react: ^19.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@jest/create-cache-key-function': 29.7.0
+      '@react-native/assets-registry': 0.79.6
+      '@react-native/codegen': 0.79.6(@babel/core@7.28.4)
+      '@react-native/community-cli-plugin': 0.79.6
+      '@react-native/gradle-plugin': 0.79.6
+      '@react-native/js-polyfills': 0.79.6
+      '@react-native/normalize-colors': 0.79.6
+      '@react-native/virtualized-lists': 0.79.6(react-native@0.79.6)(react@19.0.0)
       abort-controller: 3.0.0
       anser: 1.4.10
       ansi-regex: 5.0.1
@@ -20021,5 +20131,26 @@ packages:
         optional: true
     dependencies:
       '@types/react': 19.0.14
+      react: 19.0.0
+    dev: false
+
+  /zustand@5.0.8(react@19.0.0):
+    resolution: {integrity: sha512-gyPKpIaxY9XcO2vSMrLbiER7QMAMGOQZVRdJ6Zi782jkbzZygq5GI9nG8g+sMgitRtndwaBSl7uiqC49o1SSiw==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
+        optional: true
+    dependencies:
       react: 19.0.0
     dev: false

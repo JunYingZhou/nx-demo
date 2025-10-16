@@ -35,8 +35,8 @@ export const LocationAndMapScreen: React.FC = () => {
     // 初始化 AMapSdk
     AMapSdk.init(
       Platform.select({
-        android: 'e10d14fadb21e1cfdfa2d6a73041a81c',
-        ios: 'e10d14fadb21e1cfdfa2d6a73041a81c',
+        android: 'cd4e29c5f2ef7bd32c5b2ffa7eb1bc9c',
+        ios: 'cd4e29c5f2ef7bd32c5b2ffa7eb1bc9c',
       }),
     );
     console.log('AMapSdk 初始化完成', mapViewRef);

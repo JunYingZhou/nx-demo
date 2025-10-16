@@ -1,7 +1,9 @@
 export const NAVIGATION = {
+    map: 'Map Screen',
     home: 'Home Screen',
     login: 'Login Screen',
     ticket: 'Ticket Screen',
+    blueTooth: 'BlueTooth Screen',
     my: 'My Screen',
     agenda: 'Agenda Screen',
     eventList: 'eventList Screen',
