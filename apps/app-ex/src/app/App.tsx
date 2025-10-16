@@ -19,6 +19,8 @@ import { Drawer1Screen } from '../RootDrawer/Drawer1Stack/Drawer1Screen';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { AMapSdk } from 'react-native-amap3d';
+AMapSdk.init('e10d14fadb21e1cfdfa2d6a73041a81c');
 export const App = () => {
   const [whatsNextYCoord, setWhatsNextYCoord] = useState<number>(0);
   const scrollViewRef = useRef<null | ScrollView>(null);

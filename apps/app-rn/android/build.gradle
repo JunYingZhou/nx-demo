@@ -1,3 +1,17 @@
+def hermesPath = file("${rootDir}/../../node_modules/react-native/sdks/hermes-engine")
+if (!hermesPath.exists()) {
+    hermesPath = file("${rootDir}/../node_modules/react-native/sdks/hermes-engine")
+}
+if (!hermesPath.exists()) {
+    throw new Exception("Hermes SDK not found at: " + hermesPath)
+}
+// 指定 app-rn 下 node_modules 路径
+// def nodeModulesDir = file("../node_modules")
+// System.setProperty("NODE_PATH", nodeModulesDir.absolutePath)
+// System.setProperty("react.native.codegen.root", nodeModulesDir.absolutePath)
+// System.setProperty("react.native.root", file("../").absolutePath)
+
+
 buildscript {
     ext {
         buildToolsVersion = "35.0.0"
@@ -7,23 +21,15 @@ buildscript {
         ndkVersion = "27.1.12297006"
         kotlinVersion = "2.0.21"
     }
-
     repositories {
         google()
         mavenCentral()
     }
-
     dependencies {
-        classpath("com.android.tools.build:gradle:8.1.0")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.21")
-        classpath("com.facebook.react:react-native-gradle-plugin:0.75.3")
+        classpath("com.android.tools.build:gradle")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url("$rootDir/../node_modules/react-native/android") }
-    }
-}
+apply plugin: "com.facebook.react.rootproject"

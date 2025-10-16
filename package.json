@@ -12,7 +12,9 @@
     "expo:android": "nx run app-ex:android",
     "expo:ios": "nx run app-ex:ios",
     "expo:web": "nx run app-ex:web",
-    "expo:build": "nx run app-ex:build"
+    "expo:build": "nx run app-ex:build",
+    "rn:android": "nx run app-rn:android",
+    "rn:ios": "nx run app-rn:ios"
   },
   "private": true,
   "workspaces": [
@@ -23,7 +25,8 @@
   "dependencies": {
     "@expo/metro-config": "~0.20.14",
     "@expo/metro-runtime": "~5.0.4",
-    "@react-native/gradle-plugin": "^0.82.0",
+    "@react-native/codegen": "^0.79.6",
+    "@react-native/gradle-plugin": "^0.79.3",
     "expo": "~53.0.10",
     "expo-splash-screen": "~0.30.9",
     "expo-status-bar": "~2.2.3",
@@ -52,8 +55,8 @@
     "@nx/react-native": "21.4.1",
     "@nx/vite": "21.4.1",
     "@nx/web": "21.4.1",
-    "@react-native-community/cli": "~18.0.0",
-    "@react-native-community/cli-platform-android": "~18.0.0",
+    "@react-native-community/cli": "~13.6.0",
+    "@react-native-community/cli-platform-android": "~13.6.0",
     "@react-native-community/cli-platform-ios": "~18.0.0",
     "@react-native/babel-preset": "~0.79.3",
     "@react-native/metro-config": "~0.79.3",

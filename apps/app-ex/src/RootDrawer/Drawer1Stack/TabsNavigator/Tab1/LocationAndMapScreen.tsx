@@ -1,135 +1,153 @@
+import React, { useEffect, useRef } from 'react';
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+  Text,
+  Image,
+  Platform,
+  TouchableOpacity,
+  Alert,
+  BackHandler,
+} from 'react-native';
+import { MapView, Marker, AMapSdk, Polyline } from 'react-native-amap3d';
+import { useNavigation } from '@react-navigation/native';
 
-import React, { useEffect, useState } from "react";
-import { View, Text, Button, StyleSheet, ActivityIndicator } from "react-native";
-import * as Location from "expo-location";
-import { WebView } from "react-native-webview";
-// import { MapView, Marker } from "react-native-amap3d";
-export function LocationAndMapScreen() {
+// 坐标类型定义
+interface Coordinate {
+  latitude: number;
+  longitude: number;
+}
 
-  const [location, setLocation] = useState<Location.LocationObject | null>(null);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+interface CameraPosition {
+  target: Coordinate;
+  zoom: number;
+}
+
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+
+export const LocationAndMapScreen: React.FC = () => {
+  const navigation = useNavigation();
+  const mapViewRef = useRef<any>(null); // 用于引用 MapView 实例
+
+  // 初始化高德地图 SDK 和调试日志
   useEffect(() => {
-    (async() => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('权限被拒绝');
-        return;
+    // 初始化 AMapSdk
+    AMapSdk.init(
+      Platform.select({
+        android: 'e10d14fadb21e1cfdfa2d6a73041a81c',
+        ios: 'e10d14fadb21e1cfdfa2d6a73041a81c',
+      }),
+    );
+    console.log('AMapSdk 初始化完成', mapViewRef);
+
+    // 打印导航状态
+    console.log('Navigation State:', navigation.getState());
+    console.log('Can go back:', navigation.canGoBack());
+
+    // 清理逻辑
+    return () => {
+      console.log('Hotel 页面卸载，清理高德地图资源');
+      // 清理 AMapSdk（如果 SDK 提供销毁方法，需查阅文档）
+      // AMapSdk.destroy(); // 示例，需确认是否有此 API
+      if (mapViewRef.current) {
+        // 尝试暂停或销毁 MapView（视 SDK 支持情况）
+        mapViewRef.current = null; // 清除引用
       }
-    })()
-  }, [])
+    };
+  }, [navigation]);
 
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-        <style>html,body,#container{width:100%;height:100%;margin:0;padding:0;}</style>
-        <script src="https://webapi.amap.com/maps?v=2.0&key=5b76d1ddf6de5a5d652e4928c7fc86ab"></script>
-      </head>
-      <body>
-        <div id="container"></div>
-        <script>
-          var map = new AMap.Map("container", {
-            zoom: 15,
-            center: [116.397428, 39.90923]
-          });
-        </script>
-      </body>
-    </html>
-  `;
 
-  const getLocation = async () => {
-    // 设置loading
-    setLoading(true);
-    try {
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-      console.log('location', location);
-    } catch (e) {
-      setErrorMsg('获取位置失败');
-    } finally {
-      setLoading(false);
-    }
+  // 检查 MapView 是否可用
+  if (!MapView) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.fallbackText}>地图组件加载失败</Text>
+      </View>
+    );
+  }
+
+  // 检查 Marker 是否可用
+  if (!Marker) {
+    console.error('Marker 未定义，请检查 react-native-amap3d 版本或导入方式');
+    console.log(
+      '当前 react-native-amap3d 导出:',
+      Object.keys(require('react-native-amap3d')),
+    );
+    return (
+      <View style={styles.container}>
+        <Text style={styles.fallbackText}>
+          Load Failed, please check react-native-amap3d version or import method
+        </Text>
+      </View>
+    );
   }
 
   return (
     <View style={styles.container}>
-      <Button title="获取位置" onPress={getLocation} disabled={loading} />
-      {loading && (
-        <View style={styles.loadingRow}>
-          <ActivityIndicator size="large" color="#007AFF" />
-          <Text>正在获取位置...</Text>
-        </View>
-      )}
-      <Text style={styles.text}>纬度: {location?.coords.latitude}</Text>
-      <Text style={styles.text}>经度: {location?.coords.longitude}</Text>
-      {errorMsg && <Text>{errorMsg}</Text>}
-      {location && (
-        <View style={styles.webviewWrap}>
-          {/* <WebView
-            originWhitelist={["*"]}
-            source={{ html }}
-            javaScriptEnabled
-            domStorageEnabled
-            mixedContentMode="always"
-            style={styles.webview}
-          /> */}
-          <WebView
-            source={{ uri: 'https://m.amap.com/' }}
-            javaScriptEnabled
-            domStorageEnabled
-            mixedContentMode="always"
-            geolocationEnabled
-            style={styles.webview}
+      <View style={styles.map}>
+        <MapView
+          ref={mapViewRef} // 绑定 MapView 引用
+          style={styles.map}
+          initialCameraPosition={{
+            target: {
+              latitude: 22.2866,
+              longitude: 114.1917,
+            },
+            zoom: 15,
+          }}
+          showsLocationButton={true}
+          showsCompass={true}
+          showsScale={true}
+          onLoad={() => console.log('地图加载完成: AIA Tower marker 已渲染')}
+          onError={(error: any) => console.error('地图加载错误:', error)}
+          onPress={({
+            nativeEvent,
+          }: {
+            nativeEvent: { latitude: number; longitude: number };
+          }) =>
+            console.log(
+              '地图点击坐标:',
+              nativeEvent.latitude,
+              nativeEvent.longitude,
+            )
+          }
+        >
+          <Marker
+            position={{ latitude: 22.292214, longitude: 114.180777 }}
+            onPress={() => console.log('Marker 点击')}
           />
-        </View>
-      )}
-      {/* <MapView
-        style={StyleSheet.absoluteFill}
-        zoomLevel={15}
-        coordinate={{ latitude: location?.coords.latitude, longitude: location?.coords.longitude }}
-      >
-        {location && (
-        <Marker
-          coordinate={{ latitude: location?.coords.latitude, longitude: location?.coords.longitude }}
-          title="当前位置"
-            description="北京"
-          />
-        )}
-      </MapView> */}
+        </MapView>
+      </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 16,
+    backgroundColor: '#f0f0f0',
   },
-  loadingRow: {
+  header: {
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'space-between',
+    minHeight: 48,
+    backgroundColor: '#d31145',
+    paddingHorizontal: 16,
   },
-  text: {
+  map: {
+    flex: 1,
+  },
+  introduce: {
+    backgroundColor: '#d31145',
+    height: 200,
+  },
+  fallbackText: {
+    textAlign: 'center',
     fontSize: 16,
-    color: '#fff',
-  },
-  webviewWrap: {
-    flex: 1,
-    alignSelf: 'stretch',
-    width: '100%',
-    maxWidth: 800,
-    height: 300,
-  },
-  webview: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'transparent',
+    color: 'red',
+    margin: 20,
   },
 });
