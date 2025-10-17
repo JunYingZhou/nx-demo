@@ -1,162 +1,265 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
   View,
-  Dimensions,
   Text,
   Image,
   Platform,
-  TouchableOpacity,
+  PermissionsAndroid,
+  ActivityIndicator,
   Alert,
-  BackHandler,
+  TouchableOpacity,
 } from 'react-native';
-import { MapView, Marker, AMapSdk, Polyline } from 'react-native-amap3d';
+import { MapView, Marker, Polyline, AMapSdk, MapType } from 'react-native-amap3d';
+import Geolocation from '@react-native-community/geolocation';
 import { useNavigation } from '@react-navigation/native';
+import { Picker } from '@react-native-picker/picker';
 
-// 坐标类型定义
-interface Coordinate {
+interface LatLng {
   latitude: number;
   longitude: number;
 }
 
-interface CameraPosition {
-  target: Coordinate;
-  zoom: number;
-}
-
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
-
-const Hotel: React.FC = () => {
+const Hotel = () => {
+  const mapViewRef = useRef<any>(null);
   const navigation = useNavigation();
-  const mapViewRef = useRef<any>(null); // 用于引用 MapView 实例
+  const isMounted = useRef(true);
 
-  // 初始化高德地图 SDK 和调试日志
-  // useEffect(() => {
-  //   // 初始化 AMapSdk
-  //   AMapSdk.init(
-  //     Platform.select({
-  //       android: '5b76d1ddf6de5a5d652e4928c7fc86ab',
-  //       ios: '5b76d1ddf6de5a5d652e4928c7fc86ab',
-  //     }),
-  //   );
-  //   console.log('AMapSdk 初始化完成', mapViewRef);
+  const [loading, setLoading] = useState(true);
+  const [fetching, setFetching] = useState(false);
+  const [path, setPath] = useState<LatLng[]>([]);
+  const [mapType, setMapType] = useState<MapType>(MapType.Standard);
 
-  //   // 打印导航状态
-  //   console.log('Navigation State:', navigation.getState());
-  //   console.log('Can go back:', navigation.canGoBack());
+  const [start, setStart] = useState<LatLng | null>(null);
+  const [end, setEnd] = useState<LatLng | null>({
+    latitude: 30.543024962216446,
+    longitude: 104.06439575294166,
+  });
 
-  //   // 清理逻辑
-  //   return () => {
-  //     console.log('Hotel 页面卸载，清理高德地图资源');
-  //     // 清理 AMapSdk（如果 SDK 提供销毁方法，需查阅文档）
-  //     // AMapSdk.destroy(); // 示例，需确认是否有此 API
-  //     if (mapViewRef.current) {
-  //       // 尝试暂停或销毁 MapView（视 SDK 支持情况）
-  //       mapViewRef.current = null; // 清除引用
-  //     }
-  //   };
-  // }, [navigation]);
+  useEffect(() => {
+    AMapSdk.init('e10d14fadb21e1cfdfa2d6a73041a81c');
+    requestLocationPermission();
 
+    return () => {
+      isMounted.current = false;
+      mapViewRef.current = null;
+    };
+  }, []);
 
-  // 检查 MapView 是否可用
-  if (!MapView) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.fallbackText}>地图组件加载失败</Text>
-      </View>
+  const requestLocationPermission = async () => {
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+      );
+      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+        Alert.alert('定位权限被拒绝');
+        setLoading(false);
+        return;
+      }
+    }
+    getLocation();
+  };
+
+  const getLocation = () => {
+    Geolocation.getCurrentPosition(
+      ({ coords }) => handleLocationSuccess(coords),
+      (error) => {
+        console.warn('高精度定位失败，尝试低精度', error);
+        Geolocation.getCurrentPosition(
+          ({ coords }) => handleLocationSuccess(coords),
+          (err) => {
+            console.error('低精度定位也失败', err);
+            if (isMounted.current) {
+              Alert.alert('定位失败', '请检查定位权限或网络/GPS设置');
+              setLoading(false);
+            }
+          },
+          { enableHighAccuracy: false, timeout: 30000, maximumAge: 10000 }
+        );
+      },
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 5000 }
     );
-  }
+  };
 
-  // 检查 Marker 是否可用
-  if (!Marker) {
-    console.error('Marker 未定义，请检查 react-native-amap3d 版本或导入方式');
-    console.log(
-      '当前 react-native-amap3d 导出:',
-      Object.keys(require('react-native-amap3d')),
-    );
-    return (
-      <View style={styles.container}>
-        <Text style={styles.fallbackText}>
-          Load Failed, please check react-native-amap3d version or import method
-        </Text>
-      </View>
-    );
-  }
+  const handleLocationSuccess = (coords: GeolocationCoordinates) => {
+    if (!isMounted.current) return;
+    setStart({ latitude: coords.latitude, longitude: coords.longitude });
+  };
+
+  useEffect(() => {
+    if (start && end) fetchPath(start, end);
+  }, [start, end]);
+
+  const fetchPath = async (origin: LatLng, destination: LatLng) => {
+    if (fetching) return;
+    setFetching(true);
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `https://restapi.amap.com/v3/direction/driving?key=e10d14fadb21e1cfdfa2d6a73041a81c&origin=${origin.longitude},${origin.latitude}&destination=${destination.longitude},${destination.latitude}`
+      );
+      const data = await res.json();
+      const steps = data.route?.paths?.[0]?.steps || [];
+      const route: LatLng[] = steps.flatMap((s: any) =>
+        s.polyline
+          ? s.polyline.split(';').map((p: string) => {
+              const [lon, lat] = p.split(',');
+              return { latitude: parseFloat(lat), longitude: parseFloat(lon) };
+            })
+          : []
+      );
+      if (isMounted.current) setPath(route);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      if (isMounted.current) {
+        setLoading(false);
+        setFetching(false);
+      }
+    }
+  };
+
+  const handleBack = () => {
+    setShowMap(false);
+    setTimeout(() => navigation.goBack(), 150);
+  };
+
+  const refreshPath = () => {
+    if (start && end) fetchPath(start, end);
+  };
 
   return (
     <View style={styles.container}>
+      {/* 顶部导航栏 */}
       <View style={styles.header}>
-        <Image
-          source={require('../assets/image/app-white.png')}
-          style={{ width: 26, height: 26 }}
-          resizeMode="contain"
-        />
-      </View>
-      <View style={styles.map}>
-        <MapView
-          ref={mapViewRef} // 绑定 MapView 引用
-          style={styles.map}
-          initialCameraPosition={{
-            target: {
-              latitude: 22.2866,
-              longitude: 114.1917,
-            },
-            zoom: 15,
-          }}
-          showsLocationButton={true}
-          showsCompass={true}
-          showsScale={true}
-          onLoad={() => console.log('地图加载完成: AIA Tower marker 已渲染')}
-          onError={(error: any) => console.error('地图加载错误:', error)}
-          onPress={({
-            nativeEvent,
-          }: {
-            nativeEvent: { latitude: number; longitude: number };
-          }) =>
-            console.log(
-              '地图点击坐标:',
-              nativeEvent.latitude,
-              nativeEvent.longitude,
-            )
-          }
-        >
-          <Marker
-            position={{ latitude: 22.292214, longitude: 114.180777 }}
-            onPress={() => console.log('Marker 点击')}
+        <TouchableOpacity style={styles.backBtn} onPress={handleBack}>
+          <Image
+            source={require('../assets/image/user.png')}
+            style={{ width: 22, height: 22 }}
+            resizeMode="contain"
           />
-        </MapView>
+        </TouchableOpacity>
+        <Text style={styles.headerText}>当前位置</Text>
       </View>
+
+      {/* 地图 */}
+      <View style={styles.map}>
+        {loading || !start || !end ? (
+          <View style={styles.loading}>
+            <ActivityIndicator size="large" color="#d31145" />
+            <Text style={{ color: '#666', marginTop: 10 }}>正在加载地图...</Text>
+          </View>
+        ) : (
+          <MapView
+            ref={mapViewRef}
+            style={StyleSheet.absoluteFill}
+            mapType={mapType}
+            initialCameraPosition={{ target: start, zoom: 15 }}
+            showsTraffic
+            showsCompass
+            showsScale
+          >
+            <Marker
+              position={start}
+              title="我的位置"
+              icon={{
+                uri: 'https://reactnative.dev/img/pwa/manifest-icon-512.png',
+                width: 48,
+                height: 48,
+              }}
+            />
+            <Marker position={end} title="目的地" />
+            {path.length > 0 && (
+              <Polyline
+                width={10}
+                color="rgba(211,17,69,0.8)"
+                points={path}
+              />
+            )}
+          </MapView>
+        )}
+
+        {/* 悬浮 Picker */}
+        <View style={styles.pickerContainer}>
+          <Text style={styles.pickerLabel}>地图类型：</Text>
+          <Picker
+            selectedValue={mapType}
+            onValueChange={(value) => setMapType(value)}
+            style={styles.picker}
+            mode="dropdown"
+          >
+            <Picker.Item label="标准" value={MapType.Standard} />
+            <Picker.Item label="卫星" value={MapType.Satellite} />
+            <Picker.Item label="夜间" value={MapType.Night} />
+            <Picker.Item label="导航" value={MapType.Navi} />
+            <Picker.Item label="交通" value={MapType.Bus} />
+          </Picker>
+        </View>
+      </View>
+
+      {/* 刷新按钮 */}
+      <TouchableOpacity
+        style={[styles.refreshBtn, fetching && { opacity: 0.6 }]}
+        onPress={refreshPath}
+        disabled={fetching}
+      >
+        <Text style={styles.refreshText}>{fetching ? '刷新中…' : '刷新路线'}</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f0f0f0',
-  },
+  container: { flex: 1, backgroundColor: '#fff' },
   header: {
-    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    minHeight: 48,
+    height: 50,
     backgroundColor: '#d31145',
     paddingHorizontal: 16,
   },
-  map: {
+  backBtn: { position: 'absolute', left: 16 },
+  headerText: {
     flex: 1,
-  },
-  introduce: {
-    backgroundColor: '#d31145',
-    height: 200,
-  },
-  fallbackText: {
     textAlign: 'center',
-    fontSize: 16,
-    color: 'red',
-    margin: 20,
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
   },
+  map: { flex: 1 },
+  loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+
+  // Picker 悬浮样式
+  pickerContainer: {
+    position: 'absolute',
+    top: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.35)', // 半透明
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    zIndex: 100,
+  },
+  pickerLabel: { color: '#fff', marginRight: 8 },
+  picker: { flex: 1, color: '#fff', width: 130 },
+
+  // 刷新按钮
+  refreshBtn: {
+    position: 'absolute',
+    bottom: 24,
+    right: 16,
+    backgroundColor: '#d31145',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 14,
+    alignItems: 'center',
+    shadowColor: '#d31145',
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 4,
+  },
+  refreshText: { color: '#fff', fontSize: 16, fontWeight: '600' },
 });
 
 export default Hotel;

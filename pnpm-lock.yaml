@@ -367,6 +367,9 @@ importers:
       '@react-native-community/geolocation':
         specifier: ^3.4.0
         version: 3.4.0(react-native@0.79.6)(react@19.0.0)
+      '@react-native-picker/picker':
+        specifier: ^2.11.4
+        version: 2.11.4(react-native@0.79.6)(react@19.0.0)
       '@react-native/metro-config':
         specifier: '*'
         version: 0.79.6(@babel/core@7.28.4)
@@ -6897,6 +6900,16 @@ packages:
   /@react-native-community/geolocation@3.4.0(react-native@0.79.6)(react@19.0.0):
     resolution: {integrity: sha512-bzZH89/cwmpkPMKKveoC72C4JH0yF4St5Ceg/ZM9pA1SqX9MlRIrIrrOGZ/+yi++xAvFDiYfihtn9TvXWU9/rA==}
     engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+    dependencies:
+      react: 19.0.0
+      react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
+    dev: false
+
+  /@react-native-picker/picker@2.11.4(react-native@0.79.6)(react@19.0.0):
+    resolution: {integrity: sha512-Kf8h1AMnBo54b1fdiVylP2P/iFcZqzpMYcglC28EEFB1DEnOjsNr6Ucqc+3R9e91vHxEDnhZFbYDmAe79P2gjA==}
     peerDependencies:
       react: '*'
       react-native: '*'

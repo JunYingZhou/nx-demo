@@ -141,7 +141,7 @@ const Map = () => {
 
     try {
       const response = await fetch(
-        `https://restapi.amap.com/v3/direction/walking?key=e10d14fadb21e1cfdfa2d6a73041a81c&origin=${origin.longitude},${origin.latitude}&destination=${destination.longitude},${destination.latitude}`
+        `https://restapi.amap.com/v3/direction/driving?key=e10d14fadb21e1cfdfa2d6a73041a81c&origin=${origin.longitude},${origin.latitude}&destination=${destination.longitude},${destination.latitude}`
       );
       const data = await response.json();
 
