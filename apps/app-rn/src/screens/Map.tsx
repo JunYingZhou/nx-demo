@@ -25,7 +25,8 @@ const Map = () => {
   const [fetching, setFetching] = useState<boolean>(false);
   const [path, setPath] = useState<LatLng[]>([]);
   const [start, setStart] = useState<LatLng | null>(null);
-  const [end, setEnd] = useState<LatLng | null>(null);
+  const [end, setEnd] = useState<LatLng | null>({ latitude: 
+    31.027907454696674, longitude: 108.34056022960044 });
   const [mapReady, setMapReady] = useState<boolean>(false);
   const [showMap, setShowMap] = useState<boolean>(true);
   const navigation = useNavigation();
@@ -94,11 +95,37 @@ const Map = () => {
     );
   };
 
+
+  const watchLocation = () => {
+    Geolocation.watchPosition(
+      ({ coords }) => handleLocationSuccess(coords),
+      (error) => {
+        console.warn('高精度定位失败，尝试低精度', error);
+        Geolocation.watchPosition(
+          ({ coords }) => handleLocationSuccess(coords),
+          (err) => {
+            console.error('低精度定位也失败', err);
+            if (isMounted.current) {
+              Alert.alert('定位失败', '请检查定位权限或网络/GPS设置');
+              setLoading(false);
+            }
+          },
+          { enableHighAccuracy: false, timeout: 30000, maximumAge: 10000, distanceFilter: 10 }
+        );
+      },
+      { enableHighAccuracy: true, timeout: 30000, maximumAge: 5000, distanceFilter: 10 }
+    );
+  };
+
+  useEffect(() => {
+    watchLocation();
+  }, []);
+
   const handleLocationSuccess = (coords: GeolocationCoordinates) => {
     if (!isMounted.current) return;
     const currentPos = { latitude: coords.latitude, longitude: coords.longitude };
     setStart(currentPos);
-    setEnd({ latitude: coords.latitude + 0.01, longitude: coords.longitude + 0.01 });
+    // setEnd({ latitude: coords.latitude + 0.01, longitude: coords.longitude + 0.01 });
   };
 
   // 坐标确定后获取路线
@@ -114,7 +141,7 @@ const Map = () => {
 
     try {
       const response = await fetch(
-        `https://restapi.amap.com/v3/direction/driving?key=e10d14fadb21e1cfdfa2d6a73041a81c&origin=${origin.longitude},${origin.latitude}&destination=${destination.longitude},${destination.latitude}`
+        `https://restapi.amap.com/v3/direction/walking?key=e10d14fadb21e1cfdfa2d6a73041a81c&origin=${origin.longitude},${origin.latitude}&destination=${destination.longitude},${destination.latitude}`
       );
       const data = await response.json();
 
@@ -162,10 +189,8 @@ const Map = () => {
     if (!start || !end) return;
 
     const newStart = { latitude: start.latitude + 0.01, longitude: start.longitude + 0.01 };
-    const newEnd = { latitude: end.latitude + 0.0001, longitude: end.longitude + 0.0001 };
-
     setStart(newStart);
-    setEnd(newEnd);
+    // setEnd(newEnd);
 
     await fetchPath(newStart, newEnd);
   };
