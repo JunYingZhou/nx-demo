@@ -5,6 +5,7 @@ export const NAVIGATION = {
     ticket: 'Ticket Screen',
     blueTooth: 'BlueTooth Screen',
     my: 'My Screen',
+    nfc: "Ncf Screen",
     agenda: 'Agenda Screen',
     eventList: 'eventList Screen',
     agendaListItem: 'agendaListItem Screen',

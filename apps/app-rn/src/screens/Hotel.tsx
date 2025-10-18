@@ -209,7 +209,7 @@ const Hotel = () => {
   };
 
 
-  // 点其他地方，关闭searchResultContainer
+  // 点击关闭
   const handleOutsidePress = () => {
     if (searchList.length > 0) {
       setSearchList([]);

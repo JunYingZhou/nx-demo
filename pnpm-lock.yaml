@@ -400,6 +400,9 @@ importers:
       react-native-geocoding:
         specifier: ^0.5.0
         version: 0.5.0
+      react-native-nfc-manager:
+        specifier: ^3.17.1
+        version: 3.17.1
       react-native-safe-area-context:
         specifier: ^5.4.0
         version: 5.6.1(react-native@0.79.6)(react@19.0.0)
@@ -17279,6 +17282,15 @@ packages:
     dependencies:
       react: 19.0.0
       react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
+    dev: false
+
+  /react-native-nfc-manager@3.17.1:
+    resolution: {integrity: sha512-zZxCrEeC696Xgk+o9Hn6uv+W4jz8ElBmRmVgmxE+oCEv1g0eO8fToF3N3e/92gGYDAbwda2e3S1MD2v31rIdWg==}
+    peerDependencies:
+      '@expo/config-plugins': '*'
+    peerDependenciesMeta:
+      '@expo/config-plugins':
+        optional: true
     dev: false
 
   /react-native-reanimated@3.19.3(@babel/core@7.28.4)(react-native@0.79.6)(react@19.0.0):
