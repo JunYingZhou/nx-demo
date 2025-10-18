@@ -9,6 +9,8 @@ import {
   ActivityIndicator,
   Alert,
   TouchableOpacity,
+  TextInput,
+  TouchableWithoutFeedback, Keyboard
 } from 'react-native';
 import { MapView, Marker, Polyline, AMapSdk, MapType } from 'react-native-amap3d';
 import Geolocation from '@react-native-community/geolocation';
@@ -26,8 +28,10 @@ const Hotel = () => {
   const isMounted = useRef(true);
 
   const [loading, setLoading] = useState(true);
+  const [address, setAddress] = useState<string>('暂无');
   const [fetching, setFetching] = useState(false);
   const [path, setPath] = useState<LatLng[]>([]);
+  const [searchList, setSearchList] = useState<any[]>([]);
   const [mapType, setMapType] = useState<MapType>(MapType.Standard);
 
   const [start, setStart] = useState<LatLng | null>(null);
@@ -35,6 +39,9 @@ const Hotel = () => {
     latitude: 30.543024962216446,
     longitude: 104.06439575294166,
   });
+
+  const [searchText, setSearchText] = useState(''); // 输入框内容
+  const [searchMarker, setSearchMarker] = useState<LatLng | null>(null); // 搜索结果 Marker
 
   useEffect(() => {
     AMapSdk.init('e10d14fadb21e1cfdfa2d6a73041a81c');
@@ -45,6 +52,26 @@ const Hotel = () => {
       mapViewRef.current = null;
     };
   }, []);
+
+  const getAddressFromLatLng = async (latitude: number, longitude: number) => {
+    try {
+      const url = `https://restapi.amap.com/v3/geocode/regeo?location=${longitude},${latitude}&key=${'e10d14fadb21e1cfdfa2d6a73041a81c'}&radius=1000&extensions=all`;
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.status === '1') {
+        const addr = data.regeocode?.formatted_address || '未找到地址';
+        console.log('🗺️ 地址信息:', addr);
+        setAddress(addr);
+        return addr;
+      } else {
+        console.warn('高德API返回错误:', data.info);
+        return null;
+      }
+    } catch (error) {
+      console.error('❌ 获取地名失败:', error);
+      return null;
+    }
+  };
 
   const requestLocationPermission = async () => {
     if (Platform.OS === 'android') {
@@ -61,6 +88,7 @@ const Hotel = () => {
   };
 
   const getLocation = () => {
+    setLoading(true);
     Geolocation.getCurrentPosition(
       ({ coords }) => handleLocationSuccess(coords),
       (error) => {
@@ -77,7 +105,7 @@ const Hotel = () => {
           { enableHighAccuracy: false, timeout: 30000, maximumAge: 10000 }
         );
       },
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 5000 }
+      { enableHighAccuracy: true, timeout: 30000, maximumAge: 5000 }
     );
   };
 
@@ -87,6 +115,7 @@ const Hotel = () => {
   };
 
   useEffect(() => {
+    if (start) getAddressFromLatLng(start.latitude, start.longitude);
     if (start && end) fetchPath(start, end);
   }, [start, end]);
 
@@ -119,17 +148,81 @@ const Hotel = () => {
     }
   };
 
+  const getLatLngFromAmMap = async (address: string) => {
+    setSearchList([])
+    try {
+      const url = `https://restapi.amap.com/v3/geocode/geo?address=${encodeURIComponent(
+        address
+      )}&key=${'e10d14fadb21e1cfdfa2d6a73041a81c'}`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      console.log('dadada', data)
+
+      if (data.status === '1' && data.geocodes.length > 0) {
+        setSearchList(data.geocodes)
+        return data.geocodes
+      } else {
+        console.warn('高德返回错误:', data.info);
+        return null;
+      }
+    } catch (error) {
+      console.error('❌ 获取经纬度失败:', error);
+      return null;
+    }
+  };
+
+  const handleSearch = async () => {
+    if (!searchText.trim()) {
+      Alert.alert('请输入地名');
+      return;
+    }
+    const result = await getLatLngFromAmMap(searchText);
+    if (result.length > 0) {
+      // setSearchMarker(result);
+      // mapViewRef.current?.animateCamera({
+      //   target: result,
+      //   zoom: 16,
+      // });
+      
+    } else {
+      Alert.alert('未找到该地名');
+    }
+  };
+
   const handleBack = () => {
-    setShowMap(false);
-    setTimeout(() => navigation.goBack(), 150);
+    navigation.goBack();
   };
 
   const refreshPath = () => {
+    if (start) getAddressFromLatLng(start.latitude, start.longitude);
     if (start && end) fetchPath(start, end);
   };
 
+  const handleSelectSearchItem = (item: any) => {
+    const [longitude, latitude] = item.location.split(',').map(Number);
+    const latLng = { latitude, longitude };
+    setEnd(latLng)
+    setSearchMarker(latLng);
+    setSearchList([]); // 选中后隐藏下拉
+    // mapViewRef.current?.animateCamera({ target: latLng, zoom: 16 });
+  };
+
+
+  // 点其他地方，关闭searchResultContainer
+  const handleOutsidePress = () => {
+    if (searchList.length > 0) {
+      setSearchList([]);
+    }
+  };
+  
   return (
-    <View style={styles.container}>
+    // <TouchableWithoutFeedback onPress={() => { 
+      // console.log("TouchableWithoutFeedback")
+      // Keyboard.dismiss();  // 收起键盘
+      // handleOutsidePress(); // 关闭搜索结果
+    // }}>
+          <View style={styles.container}>
       {/* 顶部导航栏 */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={handleBack}>
@@ -139,11 +232,46 @@ const Hotel = () => {
             resizeMode="contain"
           />
         </TouchableOpacity>
-        <Text style={styles.headerText}>当前位置</Text>
+        <View style={styles.headerAddress}>
+          <Text style={styles.headerText}>当前位置</Text>
+          <Text style={{ marginTop: 10, textAlign: 'center', color: '#fff', fontSize: 12 }}>
+            {address}
+          </Text>
+        </View>
+      </View>
+      
+
+      {/* 搜索框 */}
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="输入地名搜索"
+          value={searchText}
+          onChangeText={setSearchText}
+        />
+        <TouchableOpacity style={styles.searchBtn} onPress={handleSearch}>
+          <Text style={{ color: '#fff' }}>搜索</Text>
+        </TouchableOpacity>
       </View>
 
+      {searchList.length > 0 && (
+        <View style={styles.searchResultContainer}
+        // onStartShouldSetResponder={() => true}
+        >
+          {searchList.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.searchResultItem}
+              onPress={() => handleSelectSearchItem(item)}
+            >
+              <Text>{item.formatted_address}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+
       {/* 地图 */}
-      <View style={styles.map}>
+      <View style={styles.map} onStartShouldSetResponder={() => false}>
         {loading || !start || !end ? (
           <View style={styles.loading}>
             <ActivityIndicator size="large" color="#d31145" />
@@ -159,22 +287,21 @@ const Hotel = () => {
             showsCompass
             showsScale
           >
-            <Marker
-              position={start}
-              title="我的位置"
-              icon={{
-                uri: 'https://reactnative.dev/img/pwa/manifest-icon-512.png',
-                width: 48,
-                height: 48,
-              }}
-            />
-            <Marker position={end} title="目的地" />
-            {path.length > 0 && (
-              <Polyline
-                width={10}
-                color="rgba(211,17,69,0.8)"
-                points={path}
+            {/* 起点 */}
+            <Marker position={start} title="我的位置" />
+            {/* 终点 */}
+            <Marker position={end} title="目的地" color="red" />
+            {/* 搜索结果 */}
+            {searchMarker && (
+              <Marker
+                position={searchMarker}
+                title="搜索结果"
+                color="blue"
               />
+            )}
+            {/* 路线 */}
+            {path.length > 0 && (
+              <Polyline width={10} color="rgba(211,17,69,0.8)" points={path} />
             )}
           </MapView>
         )}
@@ -206,6 +333,8 @@ const Hotel = () => {
         <Text style={styles.refreshText}>{fetching ? '刷新中…' : '刷新路线'}</Text>
       </TouchableOpacity>
     </View>
+    // </TouchableWithoutFeedback>
+
   );
 };
 
@@ -214,28 +343,46 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     height: 50,
     backgroundColor: '#d31145',
     paddingHorizontal: 16,
   },
   backBtn: { position: 'absolute', left: 16 },
-  headerText: {
-    flex: 1,
-    textAlign: 'center',
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
+  headerText: { color: '#fff', fontSize: 18, fontWeight: '600' },
+  headerAddress: { flexDirection: 'column', alignItems: 'center' },
+
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    marginTop: 8,
   },
+  searchInput: {
+    flex: 1,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    height: 40,
+  },
+  searchBtn: {
+    marginLeft: 8,
+    backgroundColor: '#d31145',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+
   map: { flex: 1 },
   loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 
-  // Picker 悬浮样式
   pickerContainer: {
     position: 'absolute',
     top: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.35)', // 半透明
+    backgroundColor: 'rgba(0,0,0,0.35)',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
@@ -244,7 +391,6 @@ const styles = StyleSheet.create({
   pickerLabel: { color: '#fff', marginRight: 8 },
   picker: { flex: 1, color: '#fff', width: 130 },
 
-  // 刷新按钮
   refreshBtn: {
     position: 'absolute',
     bottom: 24,
@@ -260,6 +406,10 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   refreshText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  searchResultContainer: { position: 'absolute', top: 100, left: 10, right: 10, backgroundColor: '#fff', borderRadius: 8, maxHeight: 'auto', zIndex: 999, elevation: 5 },
+  searchResultItem: { padding: 10, borderBottomWidth: 1, borderBottomColor: '#eee' },
+
+  map: { flex: 1 },
 });
 
 export default Hotel;

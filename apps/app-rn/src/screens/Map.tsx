@@ -13,11 +13,14 @@ import {
 import { MapView, Marker, Polyline, AMapSdk } from 'react-native-amap3d';
 import Geolocation from '@react-native-community/geolocation';
 import { useNavigation } from '@react-navigation/native';
+import { Geocode } from 'react-native-amap3d';
+import Geocoder from 'react-native-geocoding';
 
 interface LatLng {
   latitude: number;
   longitude: number;
 }
+Geocoder.init("e10d14fadb21e1cfdfa2d6a73041a81c"); // 支持 Google 或高德
 
 const Map = () => {
   const mapViewRef = useRef<any>(null);
@@ -95,7 +98,16 @@ const Map = () => {
     );
   };
 
-
+  const getAddressFromLatLng = async(latitude: number, longitude: number) => {
+    try {
+      const json = await Geocoder.from(latitude, longitude);
+      const address = json.results[0].formatted_address;
+      console.log(address);
+      return address;
+    } catch (error) {
+      console.warn(error);
+    }
+  }
   const watchLocation = () => {
     Geolocation.watchPosition(
       ({ coords }) => handleLocationSuccess(coords),
@@ -186,6 +198,8 @@ const Map = () => {
 
   // 刷新路线
   const refreshPath = async () => {
+    console.lof("asdasdasd")
+    getAddressFromLatLng(start.latitude + 0.01,start.longitude + 0.01 )
     if (!start || !end) return;
 
     const newStart = { latitude: start.latitude + 0.01, longitude: start.longitude + 0.01 };

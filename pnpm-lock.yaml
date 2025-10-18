@@ -397,6 +397,9 @@ importers:
       react-native-ble-plx:
         specifier: ^3.5.0
         version: 3.5.0(react-native@0.79.6)(react@19.0.0)
+      react-native-geocoding:
+        specifier: ^0.5.0
+        version: 0.5.0
       react-native-safe-area-context:
         specifier: ^5.4.0
         version: 5.6.1(react-native@0.79.6)(react@19.0.0)
@@ -4546,14 +4549,6 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
-  /@nrwl/devkit@19.8.4(nx@19.8.4):
-    resolution: {integrity: sha512-OoIqDjj2mWzLs3aSF6w5OiC2xywYi/jBxHc7t7Lyi56Vc4dQq8vJMELa9WtG6qH0k05fF7N+jAoKlfvLgbbEFA==}
-    dependencies:
-      '@nx/devkit': 19.8.4(nx@19.8.4)
-    transitivePeerDependencies:
-      - nx
-    dev: true
-
   /@nrwl/devkit@19.8.4(nx@21.4.1):
     resolution: {integrity: sha512-OoIqDjj2mWzLs3aSF6w5OiC2xywYi/jBxHc7t7Lyi56Vc4dQq8vJMELa9WtG6qH0k05fF7N+jAoKlfvLgbbEFA==}
     dependencies:
@@ -4808,7 +4803,7 @@ packages:
     peerDependencies:
       nx: '>= 17 <= 20'
     dependencies:
-      '@nrwl/devkit': 19.8.4(nx@19.8.4)
+      '@nrwl/devkit': 19.8.4(nx@21.4.1)
       ejs: 3.1.10
       enquirer: 2.3.6
       ignore: 5.3.2
@@ -17238,6 +17233,10 @@ packages:
     dependencies:
       react: 19.0.0
       react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
+    dev: false
+
+  /react-native-geocoding@0.5.0:
+    resolution: {integrity: sha512-peTXRpRxPLiZpbTW43AOvoXXAEoS+eLnSo4KRY0hcL9F2hulWE5r7o5KiaLx8AWj35c6EJP3fdGHe754q2Gd2Q==}
     dev: false
 
   /react-native-gesture-handler@2.28.0(react-native@0.79.6)(react@19.0.0):
