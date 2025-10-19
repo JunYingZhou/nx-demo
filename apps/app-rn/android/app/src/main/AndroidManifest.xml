@@ -22,6 +22,9 @@
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
     // 声明 NFC 功能android:required="true" 表示应用仅适用于带 NFC 的设备；若想兼容无 NFC 设备可设为 false。
     <uses-feature android:name="android.hardware.nfc" android:required="true" /> 
 

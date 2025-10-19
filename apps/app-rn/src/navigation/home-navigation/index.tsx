@@ -6,6 +6,10 @@ import Home from '../../screens/Home';
 import BlueTooth from '../../screens/BlueTooth';
 import Hotel from '../../screens/Hotel';
 import NFC from '../../screens/NFC';
+import KeyChain from '../../screens/KeyChain';
+import Camera1 from '../../screens/Camera';
+
+
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +25,8 @@ const HomeNavigator = () => {
       <Stack.Screen name={NAVIGATION_CONSTANTS.Hotel} component={Hotel} options={defaultScreenOptions}/>
       <Stack.Screen name={NAVIGATION_CONSTANTS.nfc} component={NFC} options={defaultScreenOptions}/>
       <Stack.Screen name={NAVIGATION_CONSTANTS.blueTooth} component={BlueTooth} options={defaultScreenOptions}/>
+      <Stack.Screen name={NAVIGATION_CONSTANTS.Camera} component={Camera1} options={defaultScreenOptions}/>
+      <Stack.Screen name={NAVIGATION_CONSTANTS.KeyChain} component={KeyChain} options={defaultScreenOptions}/>
     </Stack.Navigator>
   );
 }

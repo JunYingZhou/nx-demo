@@ -15,6 +15,8 @@ export const NAVIGATION = {
     QRScan: 'QRScan Screen',
     Hotel: 'Hotel Screen',
     ExecutiveMessage: 'Executive Message Screen',
+    KeyChain: 'KeyChain Screen',
+    Camera: 'Camera Screen',
   };
   
   export const TABS = {

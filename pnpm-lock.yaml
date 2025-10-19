@@ -382,9 +382,15 @@ importers:
       '@react-navigation/native-stack':
         specifier: ^7.3.25
         version: 7.3.28(@react-navigation/native@7.1.18)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native@0.79.6)(react@19.0.0)
+      install:
+        specifier: ^0.13.0
+        version: 0.13.0
       metro-config:
         specifier: '*'
         version: 0.82.5
+      npm:
+        specifier: ^11.6.2
+        version: 11.6.2
       react:
         specifier: '*'
         version: 19.0.0
@@ -400,9 +406,18 @@ importers:
       react-native-geocoding:
         specifier: ^0.5.0
         version: 0.5.0
+      react-native-keychain:
+        specifier: ^10.0.0
+        version: 10.0.0
+      react-native-linear-gradient:
+        specifier: ^2.8.3
+        version: 2.8.3(react-native@0.79.6)(react@19.0.0)
       react-native-nfc-manager:
         specifier: ^3.17.1
         version: 3.17.1
+      react-native-reanimated:
+        specifier: ^3.17.5
+        version: 3.19.3(@babel/core@7.28.4)(react-native@0.79.6)(react@19.0.0)
       react-native-safe-area-context:
         specifier: ^5.4.0
         version: 5.6.1(react-native@0.79.6)(react@19.0.0)
@@ -418,6 +433,9 @@ importers:
       react-native-toast-message:
         specifier: ^2.3.3
         version: 2.3.3(react-native@0.79.6)(react@19.0.0)
+      react-native-vision-camera:
+        specifier: ^4.7.2
+        version: 4.7.2(react-native-reanimated@3.19.3)(react-native@0.79.6)(react@19.0.0)
       zustand:
         specifier: ^5.0.8
         version: 5.0.8(@types/react@19.0.14)(react@19.0.0)
@@ -4552,6 +4570,14 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
+  /@nrwl/devkit@19.8.4(nx@19.8.4):
+    resolution: {integrity: sha512-OoIqDjj2mWzLs3aSF6w5OiC2xywYi/jBxHc7t7Lyi56Vc4dQq8vJMELa9WtG6qH0k05fF7N+jAoKlfvLgbbEFA==}
+    dependencies:
+      '@nx/devkit': 19.8.4(nx@19.8.4)
+    transitivePeerDependencies:
+      - nx
+    dev: true
+
   /@nrwl/devkit@19.8.4(nx@21.4.1):
     resolution: {integrity: sha512-OoIqDjj2mWzLs3aSF6w5OiC2xywYi/jBxHc7t7Lyi56Vc4dQq8vJMELa9WtG6qH0k05fF7N+jAoKlfvLgbbEFA==}
     dependencies:
@@ -4806,7 +4832,7 @@ packages:
     peerDependencies:
       nx: '>= 17 <= 20'
     dependencies:
-      '@nrwl/devkit': 19.8.4(nx@21.4.1)
+      '@nrwl/devkit': 19.8.4(nx@19.8.4)
       ejs: 3.1.10
       enquirer: 2.3.6
       ignore: 5.3.2
@@ -13062,6 +13088,11 @@ packages:
     dependencies:
       css-in-js-utils: 3.1.0
 
+  /install@0.13.0:
+    resolution: {integrity: sha512-zDml/jzr2PKU9I8J/xyZBQn8rPCAY//UOYNmR01XwNwyfhEWObo2SWfSl1+0tm1u6PhxLwDnfsT/6jB7OUxqFA==}
+    engines: {node: '>= 0.10'}
+    dev: false
+
   /invariant@2.2.4:
     resolution: {integrity: sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==}
     dependencies:
@@ -15835,6 +15866,78 @@ packages:
     dependencies:
       path-key: 3.1.1
 
+  /npm@11.6.2:
+    resolution: {integrity: sha512-7iKzNfy8lWYs3zq4oFPa8EXZz5xt9gQNKJZau3B1ErLBb6bF7sBJ00x09485DOvRT2l5Gerbl3VlZNT57MxJVA==}
+    engines: {node: ^20.17.0 || >=22.9.0}
+    hasBin: true
+    dev: false
+    bundledDependencies:
+      - '@isaacs/string-locale-compare'
+      - '@npmcli/arborist'
+      - '@npmcli/config'
+      - '@npmcli/fs'
+      - '@npmcli/map-workspaces'
+      - '@npmcli/package-json'
+      - '@npmcli/promise-spawn'
+      - '@npmcli/redact'
+      - '@npmcli/run-script'
+      - '@sigstore/tuf'
+      - abbrev
+      - archy
+      - cacache
+      - chalk
+      - ci-info
+      - cli-columns
+      - fastest-levenshtein
+      - fs-minipass
+      - glob
+      - graceful-fs
+      - hosted-git-info
+      - ini
+      - init-package-json
+      - is-cidr
+      - json-parse-even-better-errors
+      - libnpmaccess
+      - libnpmdiff
+      - libnpmexec
+      - libnpmfund
+      - libnpmorg
+      - libnpmpack
+      - libnpmpublish
+      - libnpmsearch
+      - libnpmteam
+      - libnpmversion
+      - make-fetch-happen
+      - minimatch
+      - minipass
+      - minipass-pipeline
+      - ms
+      - node-gyp
+      - nopt
+      - npm-audit-report
+      - npm-install-checks
+      - npm-package-arg
+      - npm-pick-manifest
+      - npm-profile
+      - npm-registry-fetch
+      - npm-user-validate
+      - p-map
+      - pacote
+      - parse-conflict-json
+      - proc-log
+      - qrcode-terminal
+      - read
+      - semver
+      - spdx-expression-parse
+      - ssri
+      - supports-color
+      - tar
+      - text-table
+      - tiny-relative-date
+      - treeverse
+      - validate-npm-package-name
+      - which
+
   /nth-check@2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}
     dependencies:
@@ -17284,6 +17387,21 @@ packages:
       react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
     dev: false
 
+  /react-native-keychain@10.0.0:
+    resolution: {integrity: sha512-YzPKSAnSzGEJ12IK6CctNLU79T1W15WDrElRQ+1/FsOazGX9ucFPTQwgYe8Dy8jiSEDJKM4wkVa3g4lD2Z+Pnw==}
+    engines: {node: '>=16'}
+    dev: false
+
+  /react-native-linear-gradient@2.8.3(react-native@0.79.6)(react@19.0.0):
+    resolution: {integrity: sha512-KflAXZcEg54PXkLyflaSZQ3PJp4uC4whM7nT/Uot9m0e/qxFV3p6uor1983D1YOBJbJN7rrWdqIjq0T42jOJyA==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+    dependencies:
+      react: 19.0.0
+      react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
+    dev: false
+
   /react-native-nfc-manager@3.17.1:
     resolution: {integrity: sha512-zZxCrEeC696Xgk+o9Hn6uv+W4jz8ElBmRmVgmxE+oCEv1g0eO8fToF3N3e/92gGYDAbwda2e3S1MD2v31rIdWg==}
     peerDependencies:
@@ -17413,6 +17531,27 @@ packages:
     dependencies:
       prop-types: 15.8.1
       yargs: 16.2.0
+    dev: false
+
+  /react-native-vision-camera@4.7.2(react-native-reanimated@3.19.3)(react-native@0.79.6)(react@19.0.0):
+    resolution: {integrity: sha512-C+5PvlSunN6I4aYplSask+v3jfhgduZumIVw6H6lG+Afpf8boIcG3uFSsSfVgj+hxI7fx6qM6bsciEhzgxEUYg==}
+    peerDependencies:
+      '@shopify/react-native-skia': '*'
+      react: '*'
+      react-native: '*'
+      react-native-reanimated: '*'
+      react-native-worklets-core: '*'
+    peerDependenciesMeta:
+      '@shopify/react-native-skia':
+        optional: true
+      react-native-reanimated:
+        optional: true
+      react-native-worklets-core:
+        optional: true
+    dependencies:
+      react: 19.0.0
+      react-native: 0.79.6(@babel/core@7.28.4)(@react-native-community/cli@13.6.9)(@types/react@19.0.14)(react@19.0.0)
+      react-native-reanimated: 3.19.3(@babel/core@7.28.4)(react-native@0.79.6)(react@19.0.0)
     dev: false
 
   /react-native-web@0.20.0(react-dom@19.0.0)(react@19.0.0):

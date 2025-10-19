@@ -81,10 +81,11 @@ android {
     namespace "com.apprn"
     defaultConfig {
         applicationId "com.apprn"
-        minSdkVersion rootProject.ext.minSdkVersion
+        // minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        minSdkVersion 24
     }
     signingConfigs {
         debug {
@@ -120,7 +121,7 @@ dependencies {
         
     // 高德 SDK，指定版本号
     implementation 'com.amap.api:3dmap:9.6.0'
-
+    implementation('com.google.mlkit:barcode-scanning:17.2.0')
 
     if (hermesEnabled.toBoolean()) {
         // 如果没有安装 hermes-engine，这里会报错
