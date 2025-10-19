@@ -26,6 +26,9 @@
     },
     {
       "path": "./app-rn"
+    },
+    {
+      "path": "./apps/app-rn1"
     }
   ]
 }

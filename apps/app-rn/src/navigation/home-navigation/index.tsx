@@ -8,6 +8,7 @@ import Hotel from '../../screens/Hotel';
 import NFC from '../../screens/NFC';
 import KeyChain from '../../screens/KeyChain';
 import Camera1 from '../../screens/Camera';
+import AnimationScreen from '../../screens/Animation';
 
 
 
@@ -27,6 +28,7 @@ const HomeNavigator = () => {
       <Stack.Screen name={NAVIGATION_CONSTANTS.blueTooth} component={BlueTooth} options={defaultScreenOptions}/>
       <Stack.Screen name={NAVIGATION_CONSTANTS.Camera} component={Camera1} options={defaultScreenOptions}/>
       <Stack.Screen name={NAVIGATION_CONSTANTS.KeyChain} component={KeyChain} options={defaultScreenOptions}/>
+      <Stack.Screen name={NAVIGATION_CONSTANTS.Animation} component={AnimationScreen} options={defaultScreenOptions}/>
     </Stack.Navigator>
   );
 }

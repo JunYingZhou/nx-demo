@@ -31,6 +31,7 @@ const Home = () => {
     { id: 'nfc', title: 'NFC', route: NAVIGATION.nfc, color: '#FF6B6B' },
     { id: 'keychain', title: '密钥链', route: NAVIGATION.KeyChain, color: '#9370DB' },
     { id: 'Camera', title: '相机', route: NAVIGATION.Camera, color: '#FF69B4' },
+    { id: 'Animation', title: '动画', route: NAVIGATION.Animation, color: '#FFD700' },
   ];
 
   const handleNavigate = (route: string) => {

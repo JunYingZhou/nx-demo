@@ -17,6 +17,7 @@ export const NAVIGATION = {
     ExecutiveMessage: 'Executive Message Screen',
     KeyChain: 'KeyChain Screen',
     Camera: 'Camera Screen',
+    Animation: 'Animation Screen',
   };
   
   export const TABS = {
