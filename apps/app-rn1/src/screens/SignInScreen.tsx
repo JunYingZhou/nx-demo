@@ -17,6 +17,7 @@ import AnimatedButton from "../components/AnimatedButton";
 const SignInScreen = () => {
   const [isFirst, setIsFirst] = useState<boolean>(false);
   const [isShowIntroduce, setIsShowIntroduce] = useState<boolean>(false);
+  const [selected, setSelected] = useState<boolean>(false);
 
   const scale = useRef(new Animated.Value(1)).current; // 创建一个Animated.Value对象，初始值为1
   const slideAnim = useRef(new Animated.Value(200)).current; // 创建一个Animated.Value对象，初始值为200
@@ -87,6 +88,7 @@ const SignInScreen = () => {
   本隐私政策自发布之日起生效。使用本应用，即表示您已阅读并同意本政策内容。
   `;
 
+  const options = ["阅读并同意《隐私政策》与《用户协议》"];
   return (
     <>
       {isFirst ? (
@@ -132,6 +134,42 @@ const SignInScreen = () => {
               delay={400}
               onPress={() => setIsFirst(false)}
             />
+          </View>
+
+          <View style={{ padding: 20, width: screenWidth, height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <TouchableOpacity
+                onPress={() => setSelected(!selected)}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginVertical: 8,
+                }}
+              >
+                <View
+                  style={{
+                    height: 20,
+                    width: 20,
+                    borderRadius: 10,
+                    borderWidth: 2,
+                    borderColor: "#007AFF",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 8,
+                  }}
+                >
+                  {selected ? (
+                    <View
+                      style={{
+                        height: 10,
+                        width: 10,
+                        borderRadius: 5,
+                        backgroundColor: "#007AFF",
+                      }}
+                    />
+                  ) : <></>}
+                </View>
+                <Text>{`阅读并同意《隐私政策》与《用户协议》`}</Text>
+              </TouchableOpacity>
           </View>
         </ImageBackground>
       ) : !isShowIntroduce ? (
@@ -179,117 +217,121 @@ const SignInScreen = () => {
           </Modal>
         </ImageBackground>
       ) : (
-  <ImageBackground
-    style={styles.container}
-    source={require("../assets/image/backg0.jpg")}
-    resizeMode="cover"
-  >
-    <View
-      style={{
-        width: screenWidth,
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-around",
-        alignItems: "center",
-      }}
-    >
-      {/* 横向可滑动 ScrollView */}
-      <ScrollView
-        ref={scrollRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={(event) => {
-          console.log(event.nativeEvent.contentOffset.x, screenWidth)
-          const index = Math.round(
-            event.nativeEvent.contentOffset.x / screenWidth
-          );
-          setCurrentIntroduce(index);
-        }}
-        style={{ flexGrow: 0 }}
-      >
-        {introduces.map((item, index) => (
+        <ImageBackground
+          style={styles.container}
+          source={require("../assets/image/backg0.jpg")}
+          resizeMode="cover"
+        >
           <View
-            key={item.id}
             style={{
               width: screenWidth,
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-around",
               alignItems: "center",
-              justifyContent: "center",
             }}
           >
-            <View style={styles.introduceItem}>
-              <View style={styles.introduceImage}>
-                <ImageBackground
-                  source={item.image}
+            {/* 横向可滑动 ScrollView */}
+            <ScrollView
+              ref={scrollRef}
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              onMomentumScrollEnd={(event) => {
+                console.log(event.nativeEvent.contentOffset.x, screenWidth);
+                const index = Math.round(
+                  event.nativeEvent.contentOffset.x / screenWidth
+                );
+                setCurrentIntroduce(index);
+              }}
+              style={{ flexGrow: 0 }}
+            >
+              {introduces.map((item, index) => (
+                <View
+                  key={item.id}
                   style={{
-                    width: "100%",
-                    height: "100%",
-                    borderRadius: 20,
-                    overflow: "hidden",
+                    width: screenWidth,
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
-                  resizeMode="cover"
+                >
+                  <View style={styles.introduceItem}>
+                    <View style={styles.introduceImage}>
+                      <ImageBackground
+                        source={item.image}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          borderRadius: 20,
+                          overflow: "hidden",
+                        }}
+                        resizeMode="cover"
+                      />
+                    </View>
+                    <Text style={styles.introduceText}>{item.text}</Text>
+                  </View>
+                </View>
+              ))}
+            </ScrollView>
+
+            {/* Next / 开始使用 按钮 */}
+            {currentIntroduce < introduces.length - 1 ? (
+              <Animated.View
+                style={{ transform: [{ translateX: slideAnimLeft }] }}
+              >
+                <AnimatedButton
+                  text="Next"
+                  color="black"
+                  textColor="#fff"
+                  width="80"
+                  borderColor=""
+                  height="30"
+                  borderRadius={50}
+                  delay={400}
+                  onPress={() => {
+                    if (scrollRef.current) {
+                      scrollRef.current.scrollTo({
+                        x: (currentIntroduce + 1) * screenWidth,
+                        animated: true,
+                      });
+                    }
+                    setCurrentIntroduce((prev) => prev + 1);
+                  }}
                 />
-              </View>
-              <Text style={styles.introduceText}>{item.text}</Text>
+              </Animated.View>
+            ) : (
+              <Animated.View
+                style={{ transform: [{ translateX: slideAnimLeft }] }}
+              >
+                <AnimatedButton
+                  text="开始使用"
+                  color="black"
+                  textColor="#fff"
+                  borderColor=""
+                  width="120"
+                  height="40"
+                  borderRadius={20}
+                  delay={400}
+                  onPress={() => setIsFirst(true)}
+                />
+              </Animated.View>
+            )}
+
+            {/* 分页指示器 */}
+            <View style={styles.indicatorContainer}>
+              {introduces.map((_, index) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.indicatorDot,
+                    currentIntroduce === index && styles.activeDot,
+                  ]}
+                />
+              ))}
             </View>
           </View>
-        ))}
-      </ScrollView>
-
-      {/* Next / 开始使用 按钮 */}
-      {currentIntroduce < introduces.length - 1 ? (
-        <Animated.View style={{ transform: [{ translateX: slideAnimLeft }] }}>
-          <AnimatedButton
-            text="Next"
-            color="black"
-            textColor="#fff"
-            width="80"
-            borderColor=''
-            height="30"
-            borderRadius={50}
-            delay={400}
-            onPress={() => {
-              if (scrollRef.current) {
-                scrollRef.current.scrollTo({
-                  x: (currentIntroduce + 1) * screenWidth,
-                  animated: true,
-                });
-              }
-              setCurrentIntroduce((prev) => prev + 1);
-            }}
-          />
-        </Animated.View>
-      ) : (
-        <Animated.View style={{ transform: [{ translateX: slideAnimLeft }] }}>
-          <AnimatedButton
-            text="开始使用"
-            color="black"
-            textColor="#fff"
-            borderColor=''
-            width="120"
-            height="40"
-            borderRadius={20}
-            delay={400}
-            onPress={() => setIsFirst(true)}
-          />
-        </Animated.View>
-      )}
-
-      {/* 分页指示器 */}
-      <View style={styles.indicatorContainer}>
-        {introduces.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.indicatorDot,
-              currentIntroduce === index && styles.activeDot,
-            ]}
-          />
-        ))}
-      </View>
-    </View>
-  </ImageBackground>
+        </ImageBackground>
       )}
     </>
   );
@@ -302,6 +344,22 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
     padding: 15,
+  },
+  bottom: {},
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    marginRight: 10,
+  },
+  checkboxChecked: {
+    backgroundColor: "#333",
   },
   text: {
     fontSize: 14,
@@ -331,12 +389,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#333",
   },
   introduceItem: {
-    display: 'flex',
+    display: "flex",
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
     width: "90%",
-    height: '60%',
+    height: "60%",
     marginHorizontal: 10,
     borderRadius: 15,
     overflow: "hidden",
@@ -344,12 +402,12 @@ const styles = StyleSheet.create({
     // backgroundColor: 'red',
   },
   introduceImage: {
-    display: 'flex',
+    display: "flex",
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
     width: "80%",
-    height: '50%',
+    height: "50%",
     borderRadius: 15,
     marginBottom: 10,
   },
@@ -362,7 +420,7 @@ const styles = StyleSheet.create({
     color: "#333",
     textAlign: "center",
     marginTop: 50,
-    padding: 10
+    padding: 10,
   },
   modalContent: {
     height: 500,
@@ -387,7 +445,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
   },
   animationText: {
-    paddingTop: 50,
+    paddingTop: 80,
     paddingLeft: 20,
     fontSize: 24,
     fontWeight: "bold",
