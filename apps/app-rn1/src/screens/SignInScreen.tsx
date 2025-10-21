@@ -179,85 +179,117 @@ const SignInScreen = () => {
           </Modal>
         </ImageBackground>
       ) : (
-        <ImageBackground
-          style={styles.container}
-          source={require("../assets/image/backg0.jpg")}
-          resizeMode="cover"
-        >            
-          <View style={{width: screenWidth, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center'}}>
-              <View style={styles.introduceItem}>
-                <View
-                  style={styles.introduceImage}
-                >
+  <ImageBackground
+    style={styles.container}
+    source={require("../assets/image/backg0.jpg")}
+    resizeMode="cover"
+  >
+    <View
+      style={{
+        width: screenWidth,
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-around",
+        alignItems: "center",
+      }}
+    >
+      {/* 横向可滑动 ScrollView */}
+      <ScrollView
+        ref={scrollRef}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onMomentumScrollEnd={(event) => {
+          console.log(event.nativeEvent.contentOffset.x, screenWidth)
+          const index = Math.round(
+            event.nativeEvent.contentOffset.x / screenWidth
+          );
+          setCurrentIntroduce(index);
+        }}
+        style={{ flexGrow: 0 }}
+      >
+        {introduces.map((item, index) => (
+          <View
+            key={item.id}
+            style={{
+              width: screenWidth,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <View style={styles.introduceItem}>
+              <View style={styles.introduceImage}>
                 <ImageBackground
-                  source={introduces[currentIntroduce].image}
-                  style={{width: '100%', height: '100%', borderRadius: 20}}
+                  source={item.image}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: 20,
+                    overflow: "hidden",
+                  }}
                   resizeMode="cover"
                 />
-                </View>
-                <Text style={styles.introduceText}>{introduces[currentIntroduce].text}</Text>
               </View>
-            {/* ))} */}
-          {/* </ScrollView> */}
-
-
-
-          {/* Next 按钮 */}
-          {currentIntroduce < introduces.length - 1 ? (
-            <Animated.View
-              style={{ transform: [{ translateX: slideAnimLeft }] }}
-            >
-              <AnimatedButton
-                text="Next"
-                color="black"
-                textColor="#fff"
-                from=""
-                borderColor=""
-                width="80"
-                height="30"
-                borderRadius={50}
-                delay={400}
-                onPress={() => {
-                    setCurrentIntroduce((prevIndex) => prevIndex + 1);
-                }}
-              />
-            </Animated.View>
-          ) : (
-            <Animated.View
-              style={{ transform: [{ translateX: slideAnimLeft }] }}
-            >
-              <AnimatedButton
-                text="开始使用"
-                color="black"
-                textColor="#fff"
-                from="right"
-                borderColor=""
-                width="120"
-                height="40"
-                borderRadius={20}
-                delay={400}
-                onPress={() => setIsFirst(true)}
-              />
-            </Animated.View>
-          )}
-
-          {/* 分页指示器 */}
-          <View style={styles.indicatorContainer}>
-            {introduces.map((_, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.indicatorDot,
-                  currentIntroduce === index && styles.activeDot,
-                ]}
-              />
-            ))}
+              <Text style={styles.introduceText}>{item.text}</Text>
+            </View>
           </View>
-          </View>
+        ))}
+      </ScrollView>
 
+      {/* Next / 开始使用 按钮 */}
+      {currentIntroduce < introduces.length - 1 ? (
+        <Animated.View style={{ transform: [{ translateX: slideAnimLeft }] }}>
+          <AnimatedButton
+            text="Next"
+            color="black"
+            textColor="#fff"
+            width="80"
+            borderColor=''
+            height="30"
+            borderRadius={50}
+            delay={400}
+            onPress={() => {
+              if (scrollRef.current) {
+                scrollRef.current.scrollTo({
+                  x: (currentIntroduce + 1) * screenWidth,
+                  animated: true,
+                });
+              }
+              setCurrentIntroduce((prev) => prev + 1);
+            }}
+          />
+        </Animated.View>
+      ) : (
+        <Animated.View style={{ transform: [{ translateX: slideAnimLeft }] }}>
+          <AnimatedButton
+            text="开始使用"
+            color="black"
+            textColor="#fff"
+            borderColor=''
+            width="120"
+            height="40"
+            borderRadius={20}
+            delay={400}
+            onPress={() => setIsFirst(true)}
+          />
+        </Animated.View>
+      )}
 
-
-        </ImageBackground>
+      {/* 分页指示器 */}
+      <View style={styles.indicatorContainer}>
+        {introduces.map((_, index) => (
+          <View
+            key={index}
+            style={[
+              styles.indicatorDot,
+              currentIntroduce === index && styles.activeDot,
+            ]}
+          />
+        ))}
+      </View>
+    </View>
+  </ImageBackground>
       )}
     </>
   );
