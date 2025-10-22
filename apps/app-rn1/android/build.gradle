@@ -1,3 +1,21 @@
+// 根 build.gradle
+
+def hermesPath = file("${rootDir}/../../node_modules/react-native/sdks/hermes-engine")
+if (!hermesPath.exists()) {
+    hermesPath = file("${rootDir}/../node_modules/react-native/sdks/hermes-engine")
+}
+if (!hermesPath.exists()) {
+    throw new Exception("Hermes SDK not found at: " + hermesPath)
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://a.amap.com/repo/' }  // 高德官方仓库
+    }
+}
+
 buildscript {
     ext {
         buildToolsVersion = "35.0.0"
@@ -10,11 +28,12 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://a.amap.com/repo/' }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle")
-        classpath("com.facebook.react:react-native-gradle-plugin")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+        classpath("com.android.tools.build:gradle:8.1.0")
+        classpath("com.facebook.react:react-native-gradle-plugin:0.75.3") // 根据 RN 版本修改
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22")
     }
 }
 
