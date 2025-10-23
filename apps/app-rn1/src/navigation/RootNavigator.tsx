@@ -6,21 +6,19 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const RootNavigation = () => {
 
-  const [isShow, setIsShow] = useState<boolean>(false)
+  // const [isShow, setIsShow] = useState<boolean>(false)
 
 
         return (
+
+          
+              <AppNavigator/>
           // <SafeAreaView
           //   style={{
           //     flex: 1,
           //   }}
           // >
-            <NavigationContainer>
-              {/* {user ? <AppNavigator /> : <AuthNavigator />} */}
-              { 
-                isShow ? <AppNavigator /> : <SignInScreen/>
-              }
-            </NavigationContainer>
+            // <NavigationContainer>
           // </SafeAreaView>
         );
     

@@ -11,10 +11,25 @@ import {
 import RootNavigator from '../navigation/RootNavigator';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import SignInScreen from '../screens/SignInScreen';
+import SignNavigator from '../navigation/SignNaigator';
+import { NavigationContainer } from '@react-navigation/native';
+// import PushNotification from "react-native-push-notification";
+
+
+// PushNotification.configure({
+//   onRegister: function (token: string) {
+//     console.log("TOKEN:", token);
+//   },
+//   onNotification: function (notification: any) {
+//     console.log("NOTIFICATION:", notification);
+//     notification.finish(PushNotification.FetchResult.NoData);
+//   },
+//   requestPermissions: true,
+// });
 
 export const App = () => {
   const scrollViewRef = useRef<null | ScrollView>(null);
-
+  const [isShow, setIsShow] = useState<boolean>(false)
   return (
     <SafeAreaProvider>
       <StatusBar barStyle="dark-content" />
@@ -23,7 +38,9 @@ export const App = () => {
           flex: 1,
         }}
       > */}
-          <RootNavigator></RootNavigator>
+      <NavigationContainer>
+          { isShow ? <RootNavigator/>  : <SignNavigator /> }
+      </NavigationContainer>
       {/* </SafeAreaView> */}
     </SafeAreaProvider>
   );

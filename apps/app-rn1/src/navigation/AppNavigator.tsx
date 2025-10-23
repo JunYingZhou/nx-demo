@@ -42,6 +42,7 @@ const AppNavigator = () => {
                   flex: 1,
                 }}
               >
+                
       <Tab.Navigator screenOptions={screenOptions}>
         <Tab.Screen name="Home" component={HomeNavigator} />
         <Tab.Screen name="My" component={MyNavigator} />

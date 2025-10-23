@@ -36,6 +36,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
-    "@react-native/codegen": "^0.79.6"
+    "@react-native/codegen": "^0.79.6",
+    "@types/react-native-push-notification": "^8.1.4"
   }
 }

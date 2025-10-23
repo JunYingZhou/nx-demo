@@ -531,6 +531,9 @@ importers:
       '@react-native/codegen':
         specifier: ^0.79.6
         version: 0.79.6(@babel/core@7.28.4)
+      '@types/react-native-push-notification':
+        specifier: ^8.1.4
+        version: 8.1.4
 
   shared/assets: {}
 
@@ -8404,6 +8407,10 @@ packages:
       '@types/react': ^19.0.0
     dependencies:
       '@types/react': 19.0.14
+    dev: true
+
+  /@types/react-native-push-notification@8.1.4:
+    resolution: {integrity: sha512-qXu/NcQ7YSk5ZveDMNKFBQkLt9W5FCde3be+h8fYbEnmvd5O+v5m318XGhh8AMPXURAV9pSB5Ads08Wc0KTS7A==}
     dev: true
 
   /@types/react@19.0.14:

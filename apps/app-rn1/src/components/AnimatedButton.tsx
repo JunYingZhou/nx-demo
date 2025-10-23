@@ -12,20 +12,32 @@ import * as Animatable from "react-native-animatable";
 /**
  * 可复用的动画按钮组件
  */
-const AnimatedButton = ({ text, color, borderColor, width='320', height='60', borderRadius=15, textColor = "#fff", onPress, delay = 0, from = "right" }) => {
+const AnimatedButton = ({
+  text,
+  color,
+  borderColor,
+  width = 300,
+  height = 60,
+  borderRadius = 15,
+  textColor = "#fff",
+  onPress,
+  delay = 0,
+  from = "none",
+}) => {
   const scale = useRef(new Animated.Value(1)).current;
   const translate = useRef(
-    new Animated.Value(from === "right" ? 300 : -200)
+    new Animated.Value(from === "right" ? 300 : from === "none" ? 0 : -200)
   ).current;
 
   useEffect(() => {
+    if (from === "none") return;
     Animated.timing(translate, {
       toValue: 0,
       duration: 600,
       delay,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [from]);
 
   const onPressIn = () => {
     Animated.spring(scale, {
@@ -44,36 +56,29 @@ const AnimatedButton = ({ text, color, borderColor, width='320', height='60', bo
   };
 
   return (
-    <Animated.View
-      style={{
-        transform: [{ scale }, { translateX: translate }],
-      }}
-    >
+    <Animated.View style={{ transform: [{ scale }, { translateX: translate }] }}>
       <Pressable
         onPressIn={onPressIn}
         onPressOut={onPressOut}
         onPress={onPress}
         style={[
           styles.buttonBase,
-          width ? { width: width} : {width: 320},
-          height ? { height: height} : {height: 60},
-          borderRadius ? { borderRadius: borderRadius} : {borderRadius: 15},
-          { backgroundColor: color, borderColor: color },
+          {
+            width: typeof width === "number" ? width : width,
+            height: typeof height === "number" ? height : height,
+            borderRadius,
+            backgroundColor: color,
+            borderColor: color,
+          },
           borderColor && styles.outlineButton,
         ]}
       >
-        <Text
-          style={[
-            styles.buttonText,
-            { color: textColor },
-          ]}
-        >
-          {text}
-        </Text>
+        <Text style={[styles.buttonText, { color: textColor }]}>{text}</Text>
       </Pressable>
     </Animated.View>
   );
 };
+
 
 const styles = StyleSheet.create({
   header: {
@@ -95,7 +100,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     justifyContent: "center",
     alignItems: "center",
-
+    width: "100%", 
     // 立体阴影效果
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 6 },

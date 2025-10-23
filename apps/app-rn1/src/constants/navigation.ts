@@ -18,7 +18,9 @@ export const NAVIGATION = {
     KeyChain: 'KeyChain Screen',
     Camera: 'Camera Screen',
     Animation: 'Animation Screen',
-    SignIn: 'SignIn Screen'
+    SignIn: 'SignIn Screen',
+    SignInPhone: 'SignInPhone Screen',
+    ValidCode: 'ValidCode Screen'
   };
   
   export const TABS = {

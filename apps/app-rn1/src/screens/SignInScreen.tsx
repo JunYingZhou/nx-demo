@@ -14,6 +14,9 @@ import {
 import * as Animatable from "react-native-animatable";
 import { useEffect, useRef, useState } from "react";
 import AnimatedButton from "../components/AnimatedButton";
+import { useNavigation } from '@react-navigation/native';
+import { NAVIGATION as NAVIGATION_CONSTANTS } from '../constants/navigation';
+
 const SignInScreen = () => {
   const [isFirst, setIsFirst] = useState<boolean>(false);
   const [isShowIntroduce, setIsShowIntroduce] = useState<boolean>(false);
@@ -25,6 +28,8 @@ const SignInScreen = () => {
   const [currentIntroduce, setCurrentIntroduce] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
   const screenWidth = Dimensions.get("window").width;
+
+  const navigation = useNavigation();
 
   const introduces: any[] = [
     {
@@ -89,6 +94,11 @@ const SignInScreen = () => {
   `;
 
   const options = ["阅读并同意《隐私政策》与《用户协议》"];
+
+
+  const goToPhone = () => {
+    navigation.navigate(NAVIGATION_CONSTANTS.SignInPhone);
+  } 
   return (
     <>
       {isFirst ? (
@@ -132,7 +142,7 @@ const SignInScreen = () => {
               from="right"
               borderColor="black"
               delay={400}
-              onPress={() => setIsFirst(false)}
+              onPress={() => goToPhone()}
             />
           </View>
 
@@ -185,16 +195,16 @@ const SignInScreen = () => {
                 <ScrollView style={styles.scrollContainer}>
                   <Text style={styles.text}>{privacyPolicy}</Text>
                 </ScrollView>
-                <Animated.View
+                {/* <Animated.View
                   style={{ transform: [{ translateX: slideAnimLeft }] }}
-                >
+                > */}
                   <AnimatedButton
                     text="同意"
                     color="black"
                     textColor="#fff"
                     borderColor=""
-                    width="320"
-                    height="50"
+                    width='300'
+                    height={50}
                     borderRadius={20}
                     delay={400}
                     onPress={() => setIsShowIntroduce(true)}
@@ -203,15 +213,14 @@ const SignInScreen = () => {
                     text="不同意"
                     color="#fff"
                     textColor="#000"
-                    from="left"
                     borderColor="black"
-                    width="320"
-                    height="50"
+                    width="300"
+                    height={50}
                     borderRadius={20}
                     delay={400}
                     onPress={() => setIsFirst(false)}
                   />
-                </Animated.View>
+                {/* </Animated.View> */}
               </View>
             </View>
           </Modal>
@@ -277,15 +286,16 @@ const SignInScreen = () => {
 
             {/* Next / 开始使用 按钮 */}
             {currentIntroduce < introduces.length - 1 ? (
-              <Animated.View
-                style={{ transform: [{ translateX: slideAnimLeft }] }}
-              >
+              // <Animated.View
+              //   style={{ transform: [{ translateX: slideAnimLeft }] }}
+              // >
                 <AnimatedButton
-                  text="Next"
+                  text="NEXT"
                   color="black"
                   textColor="#fff"
                   width="80"
                   borderColor=""
+                  from="right"
                   height="30"
                   borderRadius={50}
                   delay={400}
@@ -299,11 +309,11 @@ const SignInScreen = () => {
                     setCurrentIntroduce((prev) => prev + 1);
                   }}
                 />
-              </Animated.View>
+              // </Animated.View>
             ) : (
-              <Animated.View
-                style={{ transform: [{ translateX: slideAnimLeft }] }}
-              >
+              // <Animated.View
+              //   style={{ transform: [{ translateX: slideAnimLeft }] }}
+              // >
                 <AnimatedButton
                   text="开始使用"
                   color="black"
@@ -315,7 +325,7 @@ const SignInScreen = () => {
                   delay={400}
                   onPress={() => setIsFirst(true)}
                 />
-              </Animated.View>
+              // </Animated.View>
             )}
 
             {/* 分页指示器 */}
@@ -394,7 +404,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "column",
     width: "90%",
-    height: "60%",
+    height: "65%",
     marginHorizontal: 10,
     borderRadius: 15,
     overflow: "hidden",
@@ -407,7 +417,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "column",
     width: "80%",
-    height: "50%",
+    height: "80%",
     borderRadius: 15,
     marginBottom: 10,
   },
@@ -419,7 +429,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#333",
     textAlign: "center",
-    marginTop: 50,
+    marginTop: 40,
     padding: 10,
   },
   modalContent: {
