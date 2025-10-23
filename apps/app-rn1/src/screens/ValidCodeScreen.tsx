@@ -32,7 +32,7 @@ const ValidCodeScreen = ({ route }) => {
   }, [timer]);
 
   useEffect(() => {
-    PushNotificationF()
+    // PushNotificationF()
   }, [])
 
   const handleChange = (text: string) => {
@@ -65,7 +65,7 @@ const ValidCodeScreen = ({ route }) => {
     Alert.alert("提示", "验证码已重新发送");
 
     setTimeout(() => {
-      PushNotificationF()
+      // PushNotificationF()
     }, 2000)
   };
 
