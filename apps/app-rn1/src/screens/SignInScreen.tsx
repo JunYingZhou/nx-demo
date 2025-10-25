@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import AnimatedButton from "../components/AnimatedButton";
 import { useNavigation } from '@react-navigation/native';
 import { NAVIGATION as NAVIGATION_CONSTANTS } from '../constants/navigation';
-
+import NotificationService from '../utils/NotificationService'
 const SignInScreen = () => {
   const [isFirst, setIsFirst] = useState<boolean>(false);
   const [isShowIntroduce, setIsShowIntroduce] = useState<boolean>(false);
@@ -54,6 +54,8 @@ const SignInScreen = () => {
     },
   ];
   useEffect(() => {
+    
+    // NotificationService.init()
     Animated.timing(slideAnim, {
       toValue: 0,
       duration: 700,
@@ -95,6 +97,19 @@ const SignInScreen = () => {
 
   const options = ["阅读并同意《隐私政策》与《用户协议》"];
 
+  const sendLocalTestNotification = () => {
+    NotificationService.sendNotification({
+      title: "定时提醒",
+      message: "1234",
+      // date: new Date(Date.now() + 5000),
+    });
+    // PushNotification.localNotificationSchedule({
+    //   channelId: "default-channel-id",
+    //   title: "定时提醒",
+    //   message: "5 秒后触发",
+    //   date: new Date(Date.now() + 5000),
+    // });
+  }
 
   const goToPhone = () => {
     navigation.navigate(NAVIGATION_CONSTANTS.SignInPhone);
@@ -300,6 +315,7 @@ const SignInScreen = () => {
                   borderRadius={50}
                   delay={400}
                   onPress={() => {
+                    sendLocalTestNotification()
                     if (scrollRef.current) {
                       scrollRef.current.scrollTo({
                         x: (currentIntroduce + 1) * screenWidth,

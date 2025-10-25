@@ -7,12 +7,15 @@ import {
   ImageBackground,
   Pressable,
   Alert,
+  PermissionsAndroid,
+  Platform
 } from "react-native";
+import NotificationService from "../utils/NotificationService";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AnimatedButton from "../components/AnimatedButton";
 import { useNavigation } from "@react-navigation/native";
 import { NAVIGATION as NAVIGATION_CONSTANTS } from "../constants/navigation";
-// import PushNotification from "react-native-push-notification";
+import PushNotification from "react-native-push-notification";
 
 const ValidCodeScreen = ({ route }) => {
   const { phoneCode } = route.params;
@@ -31,9 +34,50 @@ const ValidCodeScreen = ({ route }) => {
     return () => clearInterval(interval);
   }, [timer]);
 
+
   useEffect(() => {
-    // PushNotificationF()
-  }, [])
+    // NotificationService.requestPermissions();
+    // const requestPermission = async () => {
+    //   if (Platform.OS === 'android' && Platform.Version >= 33) {
+    //     const granted = await PermissionsAndroid.request(
+    //       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+    //     );
+    //     console.log('Notification permission:', granted);
+    //   }
+    // };
+    // requestPermission();
+    // NotificationService.requestPermissions();
+    // sendLocalTestNotification()
+  },[])
+
+
+  // 发送本地通知函数
+  // const sendLocalTestNotification = () => {
+  //   PushNotification.localNotification({
+  //     channelId: "default-channel-id", // Android 必填
+  //     title: "测试通知",
+  //     message: "这是一个本地通知，不依赖 Firebase",
+  //     playSound: true,
+  //     soundName: "default",
+  //     vibrate: true,
+  //     vibration: 300,
+  //     ignoreInForeground: false, // iOS 前台也显示
+  //   });
+  // };
+
+  const sendLocalTestNotification = () => {
+    NotificationService.scheduleNotification({
+      title: "定时提醒",
+      message: "5 秒后触发",
+      date: new Date(Date.now() + 5000),
+    });
+    // PushNotification.localNotificationSchedule({
+    //   channelId: "default-channel-id",
+    //   title: "定时提醒",
+    //   message: "5 秒后触发",
+    //   date: new Date(Date.now() + 5000),
+    // });
+  }
 
   const handleChange = (text: string) => {
     if (text.length <= 6) setCode(text);
@@ -43,30 +87,29 @@ const ValidCodeScreen = ({ route }) => {
     }
   };
 
-  // const PushNotificationF = () => {
-  //   PushNotification.localNotification({
-  //     channelId: "default-channel-id",
-  //     title: "Hello",
-  //     message: "This is a local notification",
-  //   });
-  // }
 
   const nextStep = () => {
+    
+      console.log("ads")
+      sendLocalTestNotification()
     if (code.length < 6) {
-      Alert.alert("提示", "请输入6位验证码");
+      // Alert.alert("提示", "请输入6位验证码");
       return;
     }
     navigation.navigate(NAVIGATION_CONSTANTS.NextStep);
   };
 
   const resendCode = () => {
+    
+    // setTimeout(() => {
+      console.log("ads")
+      sendLocalTestNotification()
+    // }, 2000)
     if (timer > 0) return;
     setTimer(60);
     Alert.alert("提示", "验证码已重新发送");
 
-    setTimeout(() => {
-      // PushNotificationF()
-    }, 2000)
+
   };
 
   return (
