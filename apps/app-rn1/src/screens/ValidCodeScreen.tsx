@@ -47,7 +47,7 @@ const ValidCodeScreen = ({ route }) => {
     // };
     // requestPermission();
     // NotificationService.requestPermissions();
-    // sendLocalTestNotification()
+    sendLocalTestNotification()
   },[])
 
 
@@ -66,11 +66,12 @@ const ValidCodeScreen = ({ route }) => {
   // };
 
   const sendLocalTestNotification = () => {
-    NotificationService.scheduleNotification({
-      title: "定时提醒",
-      message: "5 秒后触发",
-      date: new Date(Date.now() + 5000),
-    });
+    // NotificationService.scheduleNotification({
+    //   title: "定时提醒",
+    //   message: "5 秒后触发",
+    //   date: new Date(Date.now() + 5000),
+    // });
+    NotificationService.sendNotification({title: '登录验证码', message: '您的登录验证码是：123456'})
     // PushNotification.localNotificationSchedule({
     //   channelId: "default-channel-id",
     //   title: "定时提醒",

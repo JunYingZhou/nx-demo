@@ -98,17 +98,30 @@ const SignInScreen = () => {
   const options = ["阅读并同意《隐私政策》与《用户协议》"];
 
   const sendLocalTestNotification = () => {
-    NotificationService.sendNotification({
-      title: "定时提醒",
-      message: "1234",
-      // date: new Date(Date.now() + 5000),
-    });
-    // PushNotification.localNotificationSchedule({
-    //   channelId: "default-channel-id",
-    //   title: "定时提醒",
-    //   message: "5 秒后触发",
-    //   date: new Date(Date.now() + 5000),
-    // });
+      // 立即通知
+      // NotificationService.now('欢迎', '这是一条即时通知');
+      NotificationService.sendNotification({
+        title: '欢迎',
+        message: '这是一条即时通知',
+      })
+
+      // // 5 秒后通知
+      // NotificationService.schedule('提醒', '5 秒后显示', 5);
+
+      // 每小时重复一次
+      // NotificationService.repeat('喝水提醒', '保持健康！', 'minute');
+
+      // 大文本通知
+      // NotificationService.bigText('更新内容', '你的App已更新', '1. 新增功能\n2. 提升性能\n3. 修复Bug');
+
+      // 大图通知
+      // NotificationService.bigPicture('新活动', '快来看精彩活动！', 'https://pic5.40017.cn/i/ori/PS2lfS0492.jpg');
+
+      // 静默通知
+      // NotificationService.silent('后台任务完成', '同步成功');
+
+      // 清除所有通知
+      // NotificationService.cancelAllNotifications();
   }
 
   const goToPhone = () => {
