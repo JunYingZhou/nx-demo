@@ -13,61 +13,14 @@ import NotificationService from "../utils/NotificationService";
 
 import RootNavigator from '../navigation/RootNavigator';
 import SignNavigator from '../navigation/SignNaigator';
+import signInStore from '../store/signInStore';
 
 export const App = () => {
   const scrollViewRef = useRef<null | ScrollView>(null);
   const [isShow, setIsShow] = useState<boolean>(false);
-
+  const isSign = signInStore(state => state.isSign); // 订阅状态
  useEffect(() => {
   NotificationService.init()
-  NotificationService.sendNotification({
-      title: "定时提醒",
-      message: "5 秒后触发",
-      // date: new Date(Date.now() + 5000),
-    });
-    // Android 13+ 请求通知权限
-    // const requestPermission = async () => {
-    //   if (Platform.OS === 'android' && Platform.Version >= 33) {
-    //     const granted = await PermissionsAndroid.request(
-    //       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
-    //     );
-    //     console.log('Notification permission:', granted);
-    //   }
-    // };
-    // requestPermission();
-
-    // // 初始化通知
-    // PushNotification.configure({
-    //   onNotification: (notification) => {
-    //     console.log('NOTIFICATION:', notification);
-    //   },
-    //   requestPermissions: Platform.OS === 'ios',
-    // });
-
-    // // 创建渠道
-    // PushNotification.createChannel(
-    //   {
-    //     channelId: 'default-channel-id',
-    //     channelName: '默认通知频道',
-    //     importance: 4,
-    //     vibrate: true,
-    //   },
-    //   (created) => {
-    //     console.log('Channel created:', created);
-
-    //     // 渠道创建完成后发送通知
-    //     // PushNotification.localNotification({
-    //     //   channelId: 'default-channel-id',
-    //     //   title: '测试通知',
-    //     //   message: '这是一个本地通知',
-    //     //   playSound: true,
-    //     //   soundName: 'default',
-    //     //   vibrate: true,
-    //     //   vibration: 300,
-    //     //   ignoreInForeground: false,
-    //     // });
-    //   }
-    // );
   }, []);
 
   // 发送本地通知函数
@@ -88,7 +41,7 @@ export const App = () => {
     <SafeAreaProvider>
       <StatusBar barStyle="dark-content" />
       <NavigationContainer>
-        {isShow ? <RootNavigator /> : <SignNavigator />}
+        { isSign === true ? <RootNavigator /> : <SignNavigator />}
       </NavigationContainer>
     </SafeAreaProvider>
   );

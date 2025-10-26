@@ -100,10 +100,10 @@ const SignInScreen = () => {
   const sendLocalTestNotification = () => {
       // 立即通知
       // NotificationService.now('欢迎', '这是一条即时通知');
-      NotificationService.sendNotification({
-        title: '欢迎',
-        message: '这是一条即时通知',
-      })
+      // NotificationService.sendNotification({
+      //   title: '欢迎',
+      //   message: '这是一条即时通知',
+      // })
 
       // // 5 秒后通知
       // NotificationService.schedule('提醒', '5 秒后显示', 5);

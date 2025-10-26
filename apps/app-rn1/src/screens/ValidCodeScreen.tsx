@@ -7,17 +7,17 @@ import {
   ImageBackground,
   Pressable,
   Alert,
-  PermissionsAndroid,
-  Platform
+  Keyboard,
 } from "react-native";
 import NotificationService from "../utils/NotificationService";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AnimatedButton from "../components/AnimatedButton";
 import { useNavigation } from "@react-navigation/native";
 import { NAVIGATION as NAVIGATION_CONSTANTS } from "../constants/navigation";
-import PushNotification from "react-native-push-notification";
-
+import signInStore from "../store/signInStore";
 const ValidCodeScreen = ({ route }) => {
+
+  const setSign = signInStore(state => state.setSign);
   const { phoneCode } = route.params;
   const navigation = useNavigation();
 
@@ -28,89 +28,48 @@ const ValidCodeScreen = ({ route }) => {
   // 倒计时
   useEffect(() => {
     if (timer === 0) return;
-    const interval = setInterval(() => {
-      setTimer((prev) => prev - 1);
-    }, 1000);
+    const interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
     return () => clearInterval(interval);
   }, [timer]);
 
-
+  // 页面初始发送测试通知
   useEffect(() => {
-    // NotificationService.requestPermissions();
-    // const requestPermission = async () => {
-    //   if (Platform.OS === 'android' && Platform.Version >= 33) {
-    //     const granted = await PermissionsAndroid.request(
-    //       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
-    //     );
-    //     console.log('Notification permission:', granted);
-    //   }
-    // };
-    // requestPermission();
-    // NotificationService.requestPermissions();
-    sendLocalTestNotification()
-  },[])
-
-
-  // 发送本地通知函数
-  // const sendLocalTestNotification = () => {
-  //   PushNotification.localNotification({
-  //     channelId: "default-channel-id", // Android 必填
-  //     title: "测试通知",
-  //     message: "这是一个本地通知，不依赖 Firebase",
-  //     playSound: true,
-  //     soundName: "default",
-  //     vibrate: true,
-  //     vibration: 300,
-  //     ignoreInForeground: false, // iOS 前台也显示
-  //   });
-  // };
+    sendLocalTestNotification();
+  }, []);
 
   const sendLocalTestNotification = () => {
-    // NotificationService.scheduleNotification({
-    //   title: "定时提醒",
-    //   message: "5 秒后触发",
-    //   date: new Date(Date.now() + 5000),
-    // });
-    NotificationService.sendNotification({title: '登录验证码', message: '您的登录验证码是：123456'})
-    // PushNotification.localNotificationSchedule({
-    //   channelId: "default-channel-id",
-    //   title: "定时提醒",
-    //   message: "5 秒后触发",
-    //   date: new Date(Date.now() + 5000),
-    // });
-  }
+    NotificationService.sendNotification({
+      title: "登录验证码",
+      message: "您的登录验证码是：123456",
+    });
+  };
 
   const handleChange = (text: string) => {
     if (text.length <= 6) setCode(text);
     if (text.length === 6) {
       console.log("输入完成验证码:", text);
-      // 可在这里发请求验证验证码
+      Keyboard.dismiss(); // 输入完成收起键盘
     }
   };
 
-
   const nextStep = () => {
-    
-      console.log("ads")
-      sendLocalTestNotification()
-    if (code.length < 6) {
-      // Alert.alert("提示", "请输入6位验证码");
-      return;
+    if (code.length < 6) return;
+    // sendLocalTestNotification();
+    if(code == "123456") {
+      setSign(true)
+      navigation.navigate(NAVIGATION_CONSTANTS.home);
     }
-    navigation.navigate(NAVIGATION_CONSTANTS.NextStep);
   };
 
   const resendCode = () => {
-    
-    // setTimeout(() => {
-      console.log("ads")
-      sendLocalTestNotification()
-    // }, 2000)
     if (timer > 0) return;
     setTimer(60);
+    sendLocalTestNotification();
     Alert.alert("提示", "验证码已重新发送");
+  };
 
-
+  const focusInput = () => {
+    inputRef.current?.focus();
   };
 
   return (
@@ -132,8 +91,8 @@ const ValidCodeScreen = ({ route }) => {
           <Text style={styles.Txt1}>请输入验证码</Text>
           <Text style={styles.Txt2}>验证码已发送至 {phoneCode}</Text>
 
-          {/* 点击方格聚焦输入 */}
-          <Pressable onPress={() => inputRef.current?.focus()}>
+          {/* 点击方格聚焦输入框 */}
+          <Pressable onPress={focusInput}>
             <View style={styles.codeContainer}>
               {Array(6)
                 .fill(0)
@@ -152,7 +111,7 @@ const ValidCodeScreen = ({ route }) => {
             </View>
           </Pressable>
 
-          {/* 隐藏的真实输入框 */}
+          {/* 隐藏输入框 */}
           <TextInput
             ref={inputRef}
             style={styles.hiddenInput}
@@ -206,7 +165,12 @@ const styles = StyleSheet.create({
   phoneInput: { width: "90%" },
   Txt1: { fontSize: 22, fontWeight: "bold", letterSpacing: 2 },
   Txt2: { color: "gray", fontSize: 15, marginTop: 10, marginBottom: 30 },
-  codeContainer: { flexDirection: "row", justifyContent: "space-between", width: "95%", alignSelf: "center" },
+  codeContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "95%",
+    alignSelf: "center",
+  },
   codeBox: {
     width: 50,
     height: 60,
@@ -219,9 +183,25 @@ const styles = StyleSheet.create({
   },
   activeBox: { borderColor: "#007AFF" },
   codeText: { fontSize: 24, fontWeight: "bold" },
-  hiddenInput: { position: "absolute", opacity: 0 },
-  resendContainer: { marginTop: 25, flexDirection: "row", alignItems: "center" },
+  hiddenInput: {
+    position: "absolute",
+    width: "100%",
+    height: 60, // 与验证码方格一致
+    opacity: 0.01, // 完全透明但可聚焦
+    top: 100,
+    left: 0,
+  },
+  resendContainer: {
+    marginTop: 25,
+    flexDirection: "row",
+    alignItems: "center",
+  },
   grayText: { color: "gray", fontSize: 14 },
   resendText: { fontSize: 14, fontWeight: "600" },
-  btn: { width: "100%", alignItems: "center", justifyContent: "center", marginTop: 80 },
+  btn: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 80,
+  },
 });
