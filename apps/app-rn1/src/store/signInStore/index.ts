@@ -40,7 +40,7 @@ const initializeStore = async () => {
     // if (userData) {
     //   signInStore.setState({isSign: JSON.parse(userData)});
     // }
-    signInStore.setState({isSign: true});
+    signInStore.setState({isSign: false});
   } catch (error) {
     console.error('Failed to load isSign from AsyncStorage:', error);
   }

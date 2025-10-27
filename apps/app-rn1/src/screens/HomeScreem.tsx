@@ -28,6 +28,7 @@ import {
 import Geolocation from "@react-native-community/geolocation";
 import { useNavigation } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
+import Clipboard from "@react-native-clipboard/clipboard";
 
 interface LatLng {
   latitude: number;
@@ -39,13 +40,14 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const isMounted = useRef(true);
   const { height } = Dimensions.get("window");
-
+  const [code, setCode] = useState<string>("21075454");
   const [loading, setLoading] = useState(true);
   const [address, setAddress] = useState<string>("暂无");
   const [fetching, setFetching] = useState(false);
   const [path, setPath] = useState<LatLng[]>([]);
   const [searchList, setSearchList] = useState<any[]>([]);
   const [mapType, setMapType] = useState<MapType>(MapType.Standard);
+  const [name, setName] = useState("");
   const statusBarHeight =
     Platform.OS === "android" ? StatusBar.currentHeight : 0;
   const translateY = useRef(new Animated.Value(height)).current; // 初始在屏幕外
@@ -59,6 +61,8 @@ const HomeScreen = () => {
   const [searchText, setSearchText] = useState(""); // 输入框内容
   const [searchMarker, setSearchMarker] = useState<LatLng | null>(null); // 搜索结果 Marker
   const [visible, setVisible] = useState(true);
+  const [isShowInput, setIsShowInput] = useState<boolean>(false);
+  const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
     AMapSdk.init("e10d14fadb21e1cfdfa2d6a73041a81c");
@@ -251,6 +255,18 @@ const HomeScreen = () => {
     }
   };
 
+  const showInput = () => {
+
+    setIsShowInput(true);
+    close()
+    inputRef.current?.focus();
+  }
+
+  const copy = () => {
+    Clipboard.setString(code)
+    Alert.alert('copy code successfully')
+  }
+
   return (
     <TouchableWithoutFeedback onPress={open}>
       <View style={styles.container}>
@@ -324,13 +340,16 @@ const HomeScreen = () => {
               {searchMarker && (
                 <Marker position={searchMarker} title="搜索结果" color="blue" />
               )}
-              {path.length > 0 && (
-                <Polyline
-                  width={10}
-                  color="rgba(211,17,69,0.8)"
-                  points={path}
-                />
-              )}
+              {
+              // path.length > 0 
+              // && (
+                // <Polyline
+                  // width={10}
+                  // color="rgba(211,17,69,0.8)"
+                  // points={path}
+                // />
+              // )
+              }
             </MapView>
           )}
 
@@ -379,20 +398,209 @@ const HomeScreen = () => {
               source={require("../assets/image/backg0.jpg")}
               resizeMode="cover" // cover, contain, stretch, repeat, center
             >
-              <Text style={styles.panelText}>这里是弹出的内容！</Text>
-              <TouchableOpacity onPress={close}>
-                <Text style={styles.closeBtn}>关闭</Text>
-              </TouchableOpacity>
+              {/* <Text style={styles.panelText}>这里是弹出的内容！</Text> */}
+              <View style={{ width: "100%", height: 50, display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', justifyContent: 'space-between', alignItems: 'center'}}>
+                <TouchableOpacity
+                    onPress={() => {
+                      Alert.alert('loading')
+                    }}
+                    style={{display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', justifyContent: 'space-between', alignItems: 'center'}}
+                  >
+                  <Text style={{color: '#82CB4C', fontSize: 15, fontWeight: 'bold', marginLeft: 20}}>刷新匹配状态</Text>
+                  
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => close()}
+                >
+
+                <ImageBackground
+                    style={{width: 20, height: 20, marginRight: 20}}
+                    source={require("../assets/image/close1.png")}
+                    resizeMode="cover" // cover, contain, stretch, repeat, center
+                    
+                  >
+                  </ImageBackground>
+                </TouchableOpacity>
+              </View>
+              <Text style={{textAlign: 'center',width: "100%", height: 50, lineHeight: 50, color: '#000', fontSize: 20, fontWeight: 'bold'}}>立即添加另一半</Text>
+              <View style={{display: 'flex', padding: 20, flexDirection: 'column', width: '100%', flex: 1, justifyContent: 'flex-start'}}>
+                <View style={styles.input}>
+                  <View
+                    style={styles.inputField}
+                  >
+                    <TouchableOpacity
+                      onPress={() => showInput()}
+                    >
+                      <Text style={{width: '100%',color: '#82CB4C', fontSize: 15, fontWeight: 'bold', textAlign: 'center'}}>点击输入对方匹配码</Text>
+
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <Text style={{height: 80, lineHeight: 80, color: '#000', fontSize: 15, fontWeight: 'bold', textAlign: 'center'}}>我的匹配码</Text>
+                <View style={styles.myCode}>
+                  <Text style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold', color: '#000'}}>{code}</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      copy()
+                    }}
+                    >
+                    <Text style={{marginLeft: 10, color: '#82CB4C', fontSize: 15, fontWeight: 'bold'}}>复制</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.icon1}>
+                <View
+                  style={{width: 80, height: 80, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}
+                >
+                  <ImageBackground
+                    style={{width: 40, height: 40}}
+                    source={require("../assets/image/QQ.png")}
+                  >
+                  </ImageBackground>
+                </View>
+                <View
+                  style={{width: 80, height: 80, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}
+                >
+                  <ImageBackground
+                    style={{width: 40, height: 40}}
+                    source={require("../assets/image/weixin_mw.png")}
+                  >
+                  </ImageBackground>
+                </View>
+              </View>
             </ImageBackground>
           </Animated.View>
         </Modal>
+        {isShowInput && (
+          <Modal transparent animationType="fade">
+            <TouchableWithoutFeedback onPress={() => setIsShowInput(false)}>
+              <View style={styles.inputOverlay}>
+                <TouchableWithoutFeedback>
+                  <Animated.View style={[styles.codeInputBox]}>
+                    <Text style={styles.inputTitle}>输入对方匹配码</Text>
+                    <TextInput
+                      ref={inputRef}
+                      placeholder="请输入匹配码"
+                      placeholderTextColor="#999"
+                      style={styles.inputText}
+                      autoFocus
+                      onSubmitEditing={() => setIsShowInput(false)}
+                    />
+                    <TouchableOpacity
+                      style={styles.confirmBtn}
+                      onPress={() => setIsShowInput(false)}
+                    >
+                      <Text style={styles.confirmText}>确认</Text>
+                    </TouchableOpacity>
+                  </Animated.View>
+                </TouchableWithoutFeedback>
+              </View>
+            </TouchableWithoutFeedback>
+          </Modal>
+        )}
+
       </View>
+
     </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
+  inputOverlay: {
+  flex: 1,
+  backgroundColor: 'rgba(0, 0, 0, 0.4)',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+icon1: {
+  height: 80,
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  alignItems: 'center',
+},
+codeInputBox: {
+  width: '85%',
+  backgroundColor: '#fff',
+  borderRadius: 16,
+  paddingVertical: 20,
+  paddingHorizontal: 20,
+  elevation: 6, // 安卓阴影
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 3 },
+  shadowOpacity: 0.25,
+  shadowRadius: 4,
+},
+inputTitle: {
+  fontSize: 16,
+  color: '#333',
+  fontWeight: '600',
+  textAlign: 'center',
+  marginBottom: 12,
+},
+inputText: {
+  borderWidth: 1,
+  borderColor: '#82CB4C',
+  borderRadius: 10,
+  paddingHorizontal: 12,
+  paddingVertical: 8,
+  fontSize: 16,
+  color: '#000',
+  textAlign: 'center',
+  marginBottom: 16,
+},
+confirmBtn: {
+  backgroundColor: '#82CB4C',
+  paddingVertical: 10,
+  borderRadius: 10,
+},
+confirmText: {
+  color: '#fff',
+  fontSize: 16,
+  fontWeight: 'bold',
+  textAlign: 'center',
+},
+  codeInput: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: 100,
+  },
+  myCode: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  input: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: 'center',
+    alignItems: "center",
+    width: '100%',
+    height: 'auto',
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderColor: '#82CB4C', // ✅ 正确属性
+    borderRadius: 50,
+    overflow: 'hidden'
+    
+  },
+  inputField:{
+    width: '90%',
+    height: 60,
+    lineHeight: 60,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    position: 'relative',
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -485,7 +693,6 @@ const styles = StyleSheet.create({
   btnText: { color: "#fff" },
   backdrop: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0)",
   },
   panel: {
     position: "absolute",
