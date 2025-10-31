@@ -29,7 +29,7 @@ import Geolocation from "@react-native-community/geolocation";
 import { useNavigation } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
 import Clipboard from "@react-native-clipboard/clipboard";
-
+import { getPrompt } from '../api/home/index'
 interface LatLng {
   latitude: number;
   longitude: number;
@@ -68,11 +68,33 @@ const HomeScreen = () => {
     AMapSdk.init("e10d14fadb21e1cfdfa2d6a73041a81c");
     requestLocationPermission();
 
+
+
+
     return () => {
       isMounted.current = false;
       mapViewRef.current = null;
     };
   }, []);
+
+  useEffect(()=> {
+
+    getPrompt1();
+  },[])
+
+
+  const getPrompt1 = async() => {
+    try {
+      
+    console.log("asdasdaadasda")
+        const res = await getPrompt("/prompt", '你好')
+        console.log("asdasda",res)
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
+    }
+
   const open = () => {
     console.log("open");
     setVisible(true);
