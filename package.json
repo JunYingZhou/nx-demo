@@ -25,6 +25,7 @@
   "dependencies": {
     "@expo/metro-config": "~0.20.14",
     "@expo/metro-runtime": "~5.0.4",
+    "@nestjs/cli": "^11.0.10",
     "@react-native/codegen": "^0.79.6",
     "@react-native/gradle-plugin": "^0.79.3",
     "expo": "~53.0.10",
