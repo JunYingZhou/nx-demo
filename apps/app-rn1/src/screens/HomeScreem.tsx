@@ -96,8 +96,8 @@ const HomeScreen = () => {
     }
 
   const open = () => {
-    console.log("open");
-    setVisible(true);
+    // console.log("open");
+    // setVisible(true);
   };
   const close = () => {
     Animated.timing(translateY, {
@@ -290,7 +290,7 @@ const HomeScreen = () => {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={open}>
+    // <TouchableWithoutFeedback onPress={open}>
       <View style={styles.container}>
         {/* 顶部导航栏 */}
         {/* <View style={styles.header}>
@@ -524,7 +524,7 @@ const HomeScreen = () => {
 
       </View>
 
-    </TouchableWithoutFeedback>
+    // </TouchableWithoutFeedback>
   );
 };
 
