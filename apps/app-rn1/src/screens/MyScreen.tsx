@@ -1,9 +1,6 @@
-// MyScreen.tsx
-// React Native chat screen with: markdown rendering, typing animation, streaming (best-effort),
-// AsyncStorage persistence, avatars, dark mode support, smooth scrolling.
-// NOTE: this is a single-file example (TypeScript). You may need to install the following packages:
-//   yarn add react-native-markdown-display @react-native-async-storage/async-storage
-// Or adapt to the markdown renderer you prefer.
+// MyScreen.tsx (UI 优化版)
+// 更漂亮的聊天界面：圆角卡片、浮动输入框、阴影、现代气泡、对话中提示
+// 基于 React Native + Markdown Display + AsyncStorage
 
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -18,7 +15,7 @@ import {
   ActivityIndicator,
   Image,
   KeyboardAvoidingView,
-    StatusBar,
+  StatusBar,
   Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -27,25 +24,23 @@ import Markdown from "react-native-markdown-display";
 // ---------------------- Types ----------------------
 type Role = "user" | "assistant";
 
-type Message = {
+interface Message {
+  id: string;
   role: Role;
   content: string;
-  id?: string; // optional id
-  createdAt?: number;
-};
+  createdAt: number;
+}
 
 // ---------------------- Constants ----------------------
 const API_URL = "http://192.168.31.115:3000/chat/prompt/chat";
-const STORAGE_KEY = "CHAT_MESSAGES_V2";
+const STORAGE_KEY = "CHAT_MESSAGES_V3";
 
-// ---------------------- Helpers ----------------------
 const now = () => Date.now();
 const genId = () => `${now()}_${Math.random().toString(36).slice(2, 9)}`;
 
 // ---------------------- Component ----------------------
 export default function MyScreen() {
-  const scheme = useColorScheme();
-  const isDark = scheme === "dark";
+  const isDark = useColorScheme() === "dark";
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -54,43 +49,33 @@ export default function MyScreen() {
 
   const flatRef = useRef<FlatList>(null);
 
-  // Load messages from AsyncStorage on mount
+  // 初始加载
   useEffect(() => {
     (async () => {
-      try {
-        const raw = await AsyncStorage.getItem(STORAGE_KEY);
-        if (raw) {
-          const parsed: Message[] = JSON.parse(raw);
-          setMessages(parsed);
-          // small delay to allow list to render then scroll
-          setTimeout(() => flatRef.current?.scrollToEnd({ animated: false }), 200);
-        } else {
-          // default welcome message
-          const welcome: Message = {
-            id: genId(),
-            role: "assistant",
-            content: "你好，我是你的 Agent，随时准备帮你！",
-            createdAt: now(),
-          };
-          setMessages([welcome]);
-          await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([welcome]));
-        }
-      } catch (e) {
-        console.warn("读取缓存失败", e);
+      const raw = await AsyncStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        setMessages(JSON.parse(raw));
+      } else {
+        const welcome: Message = {
+          id: genId(),
+          role: "assistant",
+          content: "你好，我是你的 Agent 🤖，随时准备为你提供帮助！",
+          createdAt: now(),
+        };
+        setMessages([welcome]);
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([welcome]));
       }
     })();
   }, []);
 
-  // Persist messages on change
+  // 持久化
   useEffect(() => {
-    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(messages)).catch((e) => {
-      console.warn("保存缓存失败", e);
-    });
+    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
   }, [messages]);
 
-  // Scroll when messages change
+  // 自动滚动
   useEffect(() => {
-    setTimeout(() => flatRef.current?.scrollToEnd({ animated: true }), 120);
+    setTimeout(() => flatRef.current?.scrollToEnd({ animated: true }), 100);
   }, [messages]);
 
   // ---------------------- Send & Streaming Logic ----------------------
@@ -104,103 +89,99 @@ export default function MyScreen() {
     setInput("");
 
     setLoading(true);
+    setStreaming(true);
 
-    // Prepare payload - send whole conversation as required by your API
-    const payload = { message: newList.map(({ role, content }) => ({ role, content })) };
+    const placeholder: Message = {
+      id: genId(),
+      role: "assistant",
+      content: "",
+      createdAt: now(),
+    };
+    setMessages((prev) => [...prev, placeholder]);
 
     try {
-      // try streaming if possible, otherwise fallback to simple fetch
-      // Note: React Native's fetch doesn't reliably support streaming across all platforms.
-      // We'll attempt a streaming-friendly approach, but fall back gracefully.
+      const payload = { message: newList.map(({ role, content }) => ({ role, content })) };
 
-      setStreaming(true);
-
-      // optimistic assistant message placeholder (we'll show progressive typing)
-      const placeholder: Message = { id: genId(), role: "assistant", content: "", createdAt: now() };
-      setMessages((prev) => [...prev, placeholder]);
-
-      // Standard fetch
       const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
-      // try to parse as JSON (your API returns { msg: "..." })
-      const textBody = await res.text();
+      const raw = await res.text();
 
+      let msg: string;
       try {
-        const json = JSON.parse(textBody);
-        const msg = (json.msg as string) || "(空消息)";
-
-        // Use typing animation to display the assistant message
-        await typeOutAssistantMessage(placeholder.id!, msg);
-      } catch (parseErr) {
-        // If not json, just display raw text
-        await typeOutAssistantMessage(placeholder.id!, textBody || "(空消息)");
+        const json = JSON.parse(raw);
+        msg = json.msg || "(空消息)";
+      } catch {
+        msg = raw;
       }
-    } catch (err) {
-      console.error("请求错误", err);
-      // replace placeholder with error text
+
+      await typeOut(placeholder.id, msg);
+    } catch (e) {
       setMessages((prev) =>
-        prev.map((m) => (m.role === "assistant" && m.content === "" ? { ...m, content: "❌ 请求失败，请检查网络或服务器。" } : m))
+        prev.map((m) =>
+          m.id === placeholder.id ? { ...m, content: "❌ 请求失败，请检查网络。" } : m
+        )
       );
-    } finally {
-      setStreaming(false);
-      setLoading(false);
     }
+
+    setStreaming(false);
+    setLoading(false);
   };
 
-  // typing animation: progressively append characters
-  const typeOutAssistantMessage = (id: string, fullText: string) => {
-    return new Promise<void>((resolve) => {
-      const total = fullText.length;
+  // 字符逐字打字效果
+  const typeOut = (id: string, text: string) =>
+    new Promise<void>((resolve) => {
       let i = 0;
-      const speed = 18; // ms per character (adjustable)
-
       const tick = () => {
-        i += 1;
-        const slice = fullText.slice(0, i);
-        setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, content: slice } : m)));
-        if (i >= total) {
-          resolve();
-        } else {
-          setTimeout(tick, speed);
-        }
+        i++;
+        setMessages((prev) =>
+          prev.map((m) => (m.id === id ? { ...m, content: text.slice(0, i) } : m))
+        );
+        if (i >= text.length) return resolve();
+        setTimeout(tick, 14);
       };
-
-      setTimeout(tick, speed);
+      tick();
     });
-  };
 
-  // Render single message bubble
+  // ---------------------- UI: 消息渲染 ----------------------
   const renderItem = ({ item }: { item: Message }) => {
     const isUser = item.role === "user";
 
     return (
-      <View style={[styles.row, isUser ? styles.rowUser : styles.rowBot, styles.container]}>
+      <View
+        style={[
+          styles.row,
+          isUser ? styles.rowUser : styles.rowBot,
+        ]}
+      >
         {!isUser && (
           <Image
-            source={{ uri: "https://placekitten.com/48/48" }}
             style={styles.avatar}
-            resizeMode="cover"
+            source={{ uri: "../assets/image/GPT.png" }}
           />
         )}
 
-        <View style={[styles.bubble, isUser ? styles.bubbleUser : styles.bubbleBot]}>
-          {/* Markdown rendering for assistant messages; user messages show plain text */}
+        <View
+          style={[
+            styles.bubble,
+            isUser ? styles.bubbleUser : styles.bubbleBot,
+            isDark && (isUser ? styles.bubbleUserDark : styles.bubbleBotDark),
+          ]}
+        >
           {item.role === "assistant" ? (
             <Markdown style={markdownStyles}>{item.content || " "}</Markdown>
           ) : (
-            <Text style={[styles.text, isUser ? { color: "#fff" } : { color: "#000" }]}>{item.content}</Text>
+            <Text style={[styles.userText]}>{item.content}</Text>
           )}
         </View>
 
         {isUser && (
           <Image
-            source={{ uri: "https://placehold.co/48x48/007bff/ffffff?text=U" }}
             style={styles.avatar}
-            resizeMode="cover"
+            source={{ uri: "../assets/image/user.png" }}
           />
         )}
       </View>
@@ -208,39 +189,59 @@ export default function MyScreen() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, isDark ? styles.darkBg : styles.lightBg]}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+    <SafeAreaView style={[styles.safe, isDark ? styles.bgDark : styles.bgLight]}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.select({ ios: "padding", android: undefined })}
+      >
         <FlatList
           ref={flatRef}
           data={messages}
-          keyExtractor={(item) => item.id || genId()}
           renderItem={renderItem}
-          contentContainerStyle={styles.list}
-          onContentSizeChange={() => flatRef.current?.scrollToEnd({ animated: true })}
-          onLayout={() => setTimeout(() => flatRef.current?.scrollToEnd({ animated: false }), 120)}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ padding: 14, paddingBottom: 50 }}
         />
 
-        <View style={[styles.footer, isDark ? styles.footerDark : styles.footerLight]}>
-          <TextInput
-            style={[styles.input, isDark ? styles.inputDark : styles.inputLight]}
-            placeholder="请输入消息..."
-            placeholderTextColor={isDark ? "#999" : "#888"}
-            value={input}
-            onChangeText={setInput}
-            multiline
-          />
+        {/* 正在输入… */}
+        {(loading || streaming) && (
+          <View style={styles.typingWrap}>
+            <ActivityIndicator size="small" color="#0B84FF" />
+            <Text style={styles.typingText}>对方正在输入…</Text>
+          </View>
+        )}
 
-          <TouchableOpacity
-            style={[styles.sendBtn, (loading || streaming) ? styles.sendBtnDisabled : null]}
-            onPress={sendMessage}
-            disabled={loading || streaming}
+        {/* 浮动输入栏 */}
+        <View style={[styles.inputBarWrap]}>
+          <View
+            style={[
+              styles.inputBar,
+              isDark ? styles.inputDark : styles.inputLight,
+            ]}
           >
-            {loading || streaming ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.sendText}>发送</Text>
-            )}
-          </TouchableOpacity>
+            <TextInput
+              value={input}
+              onChangeText={setInput}
+              placeholder="输入内容…"
+              placeholderTextColor={isDark ? "#888" : "#999"}
+              multiline
+              style={styles.input}
+            />
+
+            <TouchableOpacity
+              onPress={sendMessage}
+              disabled={loading || streaming}
+              style={[
+                styles.sendBtn,
+                (loading || streaming) && { opacity: 0.5 },
+              ]}
+            >
+              {loading || streaming ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.sendText}>发送</Text>
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -248,78 +249,120 @@ export default function MyScreen() {
 }
 
 // ---------------------- Styles ----------------------
-const baseStyles = {
-  bubbleMaxWidth: "78%",
-};
-
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0, },
-  lightBg: { backgroundColor: "#F2F6FB" },
-  darkBg: { backgroundColor: "#0B1220" },
-  list: { padding: 12, paddingBottom: 6 },
-  row: { flexDirection: "row", alignItems: "flex-end", marginVertical: 6 },
+  safe: { flex: 1, paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0 },
+  bgLight: { backgroundColor: "#F4F6FA" },
+  bgDark: { backgroundColor: "#0A0F1A" },
+
+  row: { flexDirection: "row", marginBottom: 12, alignItems: "flex-end" },
   rowUser: { justifyContent: "flex-end" },
   rowBot: { justifyContent: "flex-start" },
+
   avatar: { width: 36, height: 36, borderRadius: 18, marginHorizontal: 8 },
+
   bubble: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 14,
-    maxWidth: baseStyles.bubbleMaxWidth,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 1,
+    maxWidth: "78%",
+    padding: 10,
+    borderRadius: 18,
+    paddingBottom: 12,
   },
-  bubbleUser: { backgroundColor: "#4A90E2", borderBottomRightRadius: 4 },
-  bubbleBot: { backgroundColor: "#ffffff", borderBottomLeftRadius: 4 },
-  text: { fontSize: 15, lineHeight: 20 },
-  footer: { flexDirection: "row", alignItems: "flex-end", padding: 10, borderTopWidth: 1 },
-  footerLight: { backgroundColor: "#fff", borderColor: "#EEE" },
-  footerDark: { backgroundColor: "#071024", borderColor: "#102033" },
-  input: { flex: 1, minHeight: 40, maxHeight: 120, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8 },
-  inputLight: { backgroundColor: "#F7F8FA", color: "#111" },
-  inputDark: { backgroundColor: "#0B1726", color: "#E8F0FF" },
-  sendBtn: { marginLeft: 8, backgroundColor: "#0B84FF", paddingHorizontal: 14, paddingVertical: 10, borderRadius: 10, justifyContent: "center", alignItems: "center" },
-  sendBtnDisabled: { opacity: 0.6 },
+
+  bubbleUser: {
+    backgroundColor: "#4A90E2",
+    borderBottomRightRadius: 4,
+  },
+  bubbleUserDark: {
+    backgroundColor: "#1D4ED8",
+  },
+
+  bubbleBot: {
+    backgroundColor: "#ffffff",
+    borderBottomLeftRadius: 4,
+  },
+  bubbleBotDark: {
+    backgroundColor: "#162032",
+  },
+
+  userText: {
+    color: "#fff",
+    fontSize: 15,
+    lineHeight: 20,
+  },
+
+  // 输入栏
+  inputBarWrap: {
+    position: "absolute",
+    bottom: 10,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 12,
+  },
+
+  inputBar: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    borderRadius: 18,
+    padding: 10,
+  },
+
+  inputLight: {
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+
+  inputDark: {
+    backgroundColor: "#0D1726",
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+  },
+
+  input: {
+    flex: 1,
+    fontSize: 16,
+    maxHeight: 120,
+    color: "#fff",
+    paddingRight: 12,
+  },
+
+  sendBtn: {
+    backgroundColor: "#0B84FF",
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 12,
+  },
+
   sendText: { color: "#fff", fontWeight: "600" },
+
+  typingWrap: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: 18,
+    paddingBottom: 6,
+  },
+  typingText: {
+    color: "#7A8BAA",
+    marginLeft: 8,
+  },
 });
 
-// ---------------------- Markdown style overrides ----------------------
-const markdownStyles: any = {
-  body: { color: "#111", fontSize: 15 },
-  paragraph: { marginVertical: 4 },
-  code_inline: { backgroundColor: "rgba(27,31,35,0.05)", padding: 4, borderRadius: 4 },
-  fence: { backgroundColor: "rgba(27,31,35,0.04)", padding: 8, borderRadius: 6 },
-  heading1: { fontSize: 22, fontWeight: "700" },
-  // adapt for dark mode at render-time via color scheme if you want more control
+// ---------------------- Markdown 样式 ----------------------
+const markdownStyles = {
+  body: { color: "#E9ECF3", fontSize: 15, lineHeight: 22 },
+  paragraph: { marginBottom: 6 },
+  code_inline: {
+    backgroundColor: "rgba(255,255,255,0.1)",
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  fence: {
+    backgroundColor: "rgba(255,255,255,0.06)",
+    padding: 10,
+    borderRadius: 10,
+    marginVertical: 6,
+  },
 };
-
-/*
-Notes & next-steps / customization:
-
-1) Markdown renderer: This example uses `react-native-markdown-display`. If you prefer another lib,
-   replace the <Markdown> usage in renderItem accordingly.
-
-2) Streaming: React Native's fetch streaming is unreliable on some platforms. For a robust streaming
-   UI you'd need your server to support chunked SSE or websockets and then use a websocket client or
-   an SSE polyfill. The above example reads the full response, then types it out character-by-character
-   to simulate a streaming/typing experience.
-
-3) Avatar images: replace placeholder URIs with your actual avatars or local images.
-
-4) Persistence: messages are saved to AsyncStorage under key `CHAT_MESSAGES_V1`. To reset, clear that key.
-
-5) Typing speed: change `speed` in `typeOutAssistantMessage` for slower/faster animation.
-
-6) Markdown & long text: The Markdown renderer will render lists, bold, code blocks, etc. Long messages
-   will be typed out — you can change the typing behavior to chunk-by-chunk instead of char-by-char
-   if that feels more natural.
-
-7) Styling & dark mode: the example reads the system color scheme. If you want an explicit toggle,
-   add a switch and apply styles accordingly.
-
-If你希望我把这个分成多个文件（例如把 MessageList、InputBar、storage utils、MarkdownBubble 拆开），
-或者把流式/Socket版本实现给你，我可以继续分模块完善。
-*/
